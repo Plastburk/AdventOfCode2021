@@ -7,7 +7,7 @@ int Day1::RunA(const std::vector<std::string>& input)
 	int increases = 0;
 	for (const std::string& value : input)
 	{
-		int depth = atoi(value.c_str());
+		int depth = ToInt(value);
 		if (depth > currentValue)
 		{
 			increases++;
