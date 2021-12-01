@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+#include <vector>
 
 class Day1
 {
 public:
-	std::string RunA(const std::string& input);
-	std::string RunB(const std::string& input);
+	int RunA(const std::vector<std::string>& input);
+	int RunB(const std::vector<std::string>& input);
 };
