@@ -1,28 +1,16 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include "Utilities.h"
 #include "Day1.h"
+#include "Utilities.h"
+
+#include <iostream>
+#include <fstream>
 
 #define CASE_DAY(day) case day: \
 	Day##day obj; \
-	auto input = ReadFile("inputs/" #day ".txt"); \
-	std::cout << #day "a: " << obj.RunA(input) << std::endl; \
-	std::cout << #day "b: " << obj.RunB(input) << std::endl; \
+	std::ifstream stream("inputs/" #day ".txt"); \
+	obj.ReadInput(stream); \
+	std::cout << #day "a: " << obj.RunA() << std::endl; \
+	std::cout << #day "b: " << obj.RunB() << std::endl; \
 	break;
-
-inline std::vector<std::string> ReadFile(const char* file)
-{
-	std::ifstream stream(file);
-	std::vector<std::string> lines;
-	lines.reserve(3000);
-	std::string line;
-	while (std::getline(stream, line))
-	{
-		lines.push_back(line);
-	}
-	return lines;
-}
 
 int main(int argc, char* argv[])
 {

@@ -5,6 +5,11 @@
 class Day1
 {
 public:
-	int RunA(const std::vector<std::string>& input);
-	int RunB(const std::vector<std::string>& input);
+	void ReadInput(std::ifstream& stream);
+
+	int RunA();
+	int RunB();
+
+private:
+	std::vector<int> input;
 };
