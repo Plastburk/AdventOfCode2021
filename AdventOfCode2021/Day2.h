@@ -2,7 +2,7 @@
 #include <vector>
 #include <fstream>
 
-class Day1
+class Day2
 {
 public:
 	void ReadInput(std::ifstream& stream);
@@ -11,5 +11,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<int> input;
+	std::vector<std::tuple<char, int>> input;
 };
