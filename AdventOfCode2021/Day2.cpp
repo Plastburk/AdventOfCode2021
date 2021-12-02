@@ -13,7 +13,7 @@ int Day2::RunA()
 	int depth = 0;
 	for (const auto& line : input)
 	{
-		auto [type, value] = line;
+		auto &[type, value] = line;
 
 		if (type == 'f')
 			horizontal += value;
@@ -33,7 +33,7 @@ int Day2::RunB()
 	int aim = 0;
 	for (const auto& line : input)
 	{
-		auto [type, value] = line;
+		auto &[type, value] = line;
 
 		if (type == 'f')
 		{
