@@ -1,5 +1,5 @@
 #include "Day1.h"
-#include "Utilities.h"
+#include "Utilities/Utilities.h"
 
 void Day1::ReadInput(std::ifstream& stream)
 {

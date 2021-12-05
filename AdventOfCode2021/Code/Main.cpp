@@ -1,7 +1,8 @@
 #include "Day1.h"
 #include "Day2.h"
 #include "Day3.h"
-#include "Utilities.h"
+#include "Day4.h"
+#include "Utilities/Utilities.h"
 
 #include <iostream>
 #include <fstream>
@@ -30,6 +31,7 @@ int main(int argc, char* argv[])
 				CASE_DAY(1);
 				CASE_DAY(2);
 				CASE_DAY(3);
+				CASE_DAY(4);
 			}
 		}
 		std::cout << "Done" << std::endl;

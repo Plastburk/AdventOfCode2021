@@ -1,8 +1,9 @@
 #pragma once
+
 #include <vector>
 #include <fstream>
 
-class Day3
+class Day2
 {
 public:
 	void ReadInput(std::ifstream& stream);
@@ -11,6 +12,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<uint32_t> input;
-	int bits;
+	std::vector<std::tuple<char, int>> input;
 };

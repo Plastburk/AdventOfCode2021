@@ -1,5 +1,5 @@
 #include "Day3.h"
-#include "Utilities.h"
+#include "Utilities/Utilities.h"
 
 void Day3::ReadInput(std::ifstream& stream)
 {
@@ -36,7 +36,7 @@ inline int RunLoop(const std::vector<uint32_t>& input, int bits, bool invertKeep
 		for (int value : list)
 			count += (value & (0x1 << i)) > 0;
 
-		bool keepOnes = ((count * 10) >= ((list.size() * 10) / 2)) ^ invertKeepOnes;
+		bool keepOnes = ((count * 10) >= (((int)list.size() * 10) / 2)) ^ invertKeepOnes;
 
 		for (auto it = list.begin(); it != list.end();)
 		{
