@@ -22,7 +22,7 @@ inline int FindWinningTurn(std::vector<int>::iterator startOfBoard)
 {
 	// Find first horizontal win
 	int winningTurn = INT_MAX;
-	for (int row = 0; row < 5; row++)
+	for (size_t row = 0; row < 5; row++)
 	{
 		int max = *std::max_element(startOfBoard + (row * 5), startOfBoard + (row * 5) + 5);
 		if (max < winningTurn)
@@ -34,7 +34,7 @@ inline int FindWinningTurn(std::vector<int>::iterator startOfBoard)
 	{
 		bool win = true;
 		int max = -1;
-		for (int row = 0; row < 5; row++)
+		for (size_t row = 0; row < 5; row++)
 		{
 			int value = *(startOfBoard + (row * 5) + column);
 			if (value > max)
@@ -64,10 +64,10 @@ inline int SumUnmarkedNumbers(int* startOfBoard, const std::vector<int>& drawnNu
 
 int Day4::RunA()
 {
-	const int numbersPerBoard = 5 * 5;
+	const size_t numbersPerBoard = 5 * 5;
 	const size_t boards = input2.size() / numbersPerBoard;
 
-	int winningBoard = -1;
+	size_t winningBoard = -1;
 	int winningTurn = INT_MAX;
 	for (size_t board = 0; board < boards; board++)
 	{
@@ -85,10 +85,10 @@ int Day4::RunA()
 
 int Day4::RunB()
 {
-	const int numbersPerBoard = 5 * 5;
+	const size_t numbersPerBoard = 5 * 5;
 	const size_t boards = input2.size() / numbersPerBoard;
 
-	int losingBoard = -1;
+	size_t losingBoard = -1;
 	int losingTurn = -1;
 	for (size_t board = 0; board < boards; board++)
 	{
