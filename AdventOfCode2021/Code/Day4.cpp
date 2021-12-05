@@ -9,58 +9,55 @@ void Day4::ReadInput(std::ifstream& stream)
 	input1.reserve(200);
 	input2.reserve(4000);
 	ReadPartialsFromStream<int, int, ReadIntsUntilEndline_Data, ReadInts_Data>(stream, input1, input2, ReadIntsUntilEndline, ReadInts);
+
+	// Remap boards so each number is the turn that number will be called instead
+	std::unordered_map<int, int> valueToTurn;
+	for (int i = 0; i < input1.size(); i++)
+		valueToTurn[input1[i]] = i;
+
+	for (int i = 0; i < input2.size(); i++)
+		input2[i] = valueToTurn[input2[i]];
 }
 
-inline bool IsWinner(int* startOfBoard, const std::unordered_set<int>& drawnNumbers)
+inline int FindWinningTurn(std::vector<int>::iterator startOfBoard)
 {
-	// Check horizontal wins
+	// Find first horizontal win
+	int winningTurn = INT_MAX;
 	for (int row = 0; row < 5; row++)
 	{
-		bool win = true;
-		for (int column = 0; column < 5; column++)
-		{
-			int value = *(startOfBoard + (row * 5) + column);
-			if (drawnNumbers.find(value) == drawnNumbers.end())
-			{
-				win = false;
-				break; // If any is not a hit, we didn't win
-			}
-		}
-
-		if (win)
-			return true;
+		int max = *std::max_element(startOfBoard + (row * 5), startOfBoard + (row * 5) + 5);
+		if (max < winningTurn)
+			winningTurn = max;
 	}
 
-	// Check vertical wins
+	// Find first vertical win
 	for (int column = 0; column < 5; column++)
 	{
 		bool win = true;
+		int max = -1;
 		for (int row = 0; row < 5; row++)
 		{
 			int value = *(startOfBoard + (row * 5) + column);
-			if (drawnNumbers.find(value) == drawnNumbers.end())
-			{
-				win = false;
-				break; // If any is not a hit, we didn't win
-			}
+			if (value > max)
+				max = value;
 		}
 
-		if (win)
-			return true;
+		if (max < winningTurn)
+			winningTurn = max;
 	}
 
-	return false;
+	return winningTurn;
 }
 
-inline int SumUnmarkedNumbers(int* startOfBoard, const std::unordered_set<int>& drawnNumbers)
+inline int SumUnmarkedNumbers(int* startOfBoard, const std::vector<int>& drawnNumbers, int winningTurn)
 {
 	int sum = 0;
 
 	for (int i = 0; i < 5 * 5; i++)
 	{
-		int value = *(startOfBoard + i);
-		if (drawnNumbers.find(value) == drawnNumbers.end())
-			sum += value;
+		int turn = *(startOfBoard + i);
+		if (turn > winningTurn)
+			sum += drawnNumbers[turn];
 	}
 
 	return sum;
@@ -71,56 +68,39 @@ int Day4::RunA()
 	const int numbersPerBoard = 5 * 5;
 	const size_t boards = input2.size() / numbersPerBoard;
 
-	std::unordered_set<int> drawnNumbers(input1.cbegin(), input1.cbegin() + 5);
-
-	for (size_t drawn = 5; drawn < input1.size(); drawn++)
+	int winningBoard = -1;
+	int winningTurn = INT_MAX;
+	for (size_t board = 0; board < boards; board++)
 	{
-		drawnNumbers.insert(input1[drawn]);
-
-		for (size_t board = 0; board < boards; board++)
+		int turn = FindWinningTurn(input2.begin() + numbersPerBoard * board);
+		if (turn < winningTurn)
 		{
-			if (IsWinner(&input2[numbersPerBoard * board], drawnNumbers))
-			{
-				int sum = SumUnmarkedNumbers(&input2[numbersPerBoard * board], drawnNumbers);
-				return sum * input1[drawn];
-			}
+			winningTurn = turn;
+			winningBoard = board;
 		}
 	}
 
-	return 0;
+	int sum = SumUnmarkedNumbers(&input2[numbersPerBoard * winningBoard], input1, winningTurn);
+	return sum * input1[winningTurn];
 }
+
 int Day4::RunB()
 {
 	const int numbersPerBoard = 5 * 5;
 	const size_t boards = input2.size() / numbersPerBoard;
 
-	std::vector<int> remainingBoards(boards);
-	std::iota(remainingBoards.begin(), remainingBoards.end(), 0);
-
-	std::unordered_set<int> drawnNumbers(input1.cbegin(), input1.cbegin() + 5);
-
-	for (size_t drawn = 5; drawn < input1.size(); drawn++)
+	int losingBoard = -1;
+	int losingTurn = -1;
+	for (size_t board = 0; board < boards; board++)
 	{
-		drawnNumbers.insert(input1[drawn]);
-
-		for (auto it = remainingBoards.begin(); it != remainingBoards.end();)
+		int turn = FindWinningTurn(input2.begin() + numbersPerBoard * board);
+		if (turn > losingTurn)
 		{
-			size_t board = *it;
-
-			if (IsWinner(&input2[numbersPerBoard * board], drawnNumbers))
-			{
-				it = remainingBoards.erase(it);
-
-				if (remainingBoards.size() == 0)
-				{
-					int sum = SumUnmarkedNumbers(&input2[numbersPerBoard * board], drawnNumbers);
-					return sum * input1[drawn];
-				}
-			}
-			else
-				it++;
+			losingTurn = turn;
+			losingBoard = board;
 		}
 	}
 
-	return 0;
+	int sum = SumUnmarkedNumbers(&input2[numbersPerBoard * losingBoard], input1, losingTurn);
+	return sum * input1[losingTurn];
 }
