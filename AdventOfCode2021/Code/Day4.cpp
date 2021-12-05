@@ -1,7 +1,6 @@
 #include "Day4.h"
 #include "Utilities/Utilities.h"
 
-#include <numeric>
 #include <unordered_set>
 
 void Day4::ReadInput(std::ifstream& stream)
