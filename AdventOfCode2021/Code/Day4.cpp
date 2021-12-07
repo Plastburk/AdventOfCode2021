@@ -7,7 +7,14 @@ void Day4::ReadInput(std::ifstream& stream)
 {
 	input1.reserve(200);
 	input2.reserve(4000);
-	ReadPartialsFromStream<int, int, ReadIntsUntilEndline_Data, ReadInts_Data>(stream, input1, input2, ReadIntsUntilEndline, ReadInts);
+
+	ReadPartialsFromStream<
+		int, ReadInts_Data, ReadInts_Params,
+		int, ReadInts_Data, ReadInts_Params
+	>(stream,
+		input1, ReadInts, { '\n',  ',' },
+		input2, ReadInts, { 0, ' ', '\n' }
+	);
 
 	// Remap boards so each number is the turn that number will be called instead
 	std::unordered_map<int, int> valueToTurn;

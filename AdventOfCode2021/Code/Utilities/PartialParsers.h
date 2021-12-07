@@ -7,21 +7,21 @@
 
 // Boilerplate
 
-template <class ListT, class DataT>
-using PartialFunc = std::function<bool(char*&, std::streamsize&, std::vector<ListT>&, DataT&)>;
+template <class ListT, class DataT, class ParseParamT>
+using PartialFunc = std::function<bool(char*&, std::streamsize&, std::vector<ListT>&, DataT&, const ParseParamT&)>;
 
 template <class ListT, class DataT>
 using PartialFuncEnd = std::function<void(std::vector<ListT>&, DataT&)>;
 
-template<class ListT, class DataT>
+template<class ListT, class DataT, class ParseParamT>
 struct PartialFuncContainer
 {
-	PartialFunc<ListT, DataT> main;
+	PartialFunc<ListT, DataT, ParseParamT> main;
 	PartialFuncEnd<ListT, DataT> end;
 };
 
-template<class ListT1, class ListT2, class DataT1, class DataT2>
-inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& list1, std::vector<ListT2>& list2, PartialFuncContainer<ListT1, DataT1> partial1, PartialFuncContainer<ListT2, DataT2> partial2)
+template<class ListT1, class DataT1, class ParseParamT1, class ListT2, class DataT2, class ParseParamT2>
+inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& list1, PartialFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1, std::vector<ListT2>& list2, PartialFuncContainer<ListT2, DataT2, ParseParamT2> partial2, const ParseParamT2& parseParam2)
 {
 	char buffer[8192];
 
@@ -41,7 +41,7 @@ inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& l
 
 		if (running1)
 		{
-			if (partial1.main(c, bytes, list1, data1))
+			if (partial1.main(c, bytes, list1, data1, parseParam1))
 			{
 				partial1.end(list1, data1);
 				running1 = false;
@@ -50,7 +50,8 @@ inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& l
 
 		if (!running1)
 		{
-			partial2.main(c, bytes, list2, data2);
+			if (partial2.main(c, bytes, list2, data2, parseParam2))
+				break;
 		}
 	}
 
@@ -60,53 +61,29 @@ inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& l
 		partial2.end(list2, data2);
 }
 
-// ReadIntsUntilEndline
 
-struct ReadIntsUntilEndline_Data
+template<class ListT1, class DataT1, class ParseParamT1>
+inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& list1, PartialFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1)
 {
-	bool hasNumber;
-	int number;
-};
+	char buffer[8192];
 
-inline bool ReadIntsUntilEndline_Main(char*& c, std::streamsize& bytes, std::vector<int>& list, ReadIntsUntilEndline_Data& data)
-{
-	while (bytes > 0)
+	DataT1 data1{};
+
+	while (true)
 	{
-		if (*c >= '0' && *c <= '9')
-		{
-			data.hasNumber = true;
-			data.number *= 10;
-			data.number += *c - '0';
-		}
-		else if (*c == ',')
-		{
-			if (data.hasNumber)
-				list.push_back(data.number);
+		stream.read(buffer, sizeof(buffer));
+		char* c = buffer;
 
-			data.number = 0;
-			data.hasNumber = false;
-		}
-		else if (*c == '\n')
-		{
-			return true;
-		}
-		else
-			exit(1); // Unexpected input, just exit
+		std::streamsize bytes = stream.gcount();
+		if (bytes == 0)
+			break;
 
-		c++;
-		bytes--;
+		if (partial1.main(c, bytes, list1, data1, parseParam1))
+			break;
 	}
 
-	return false;
+	partial1.end(list1, data1);
 }
-
-inline void ReadIntsUntilEndline_End(std::vector<int>& list, ReadIntsUntilEndline_Data& data)
-{
-	if (data.hasNumber)
-		list.push_back(data.number);
-}
-
-#define ReadIntsUntilEndline { ReadIntsUntilEndline_Main, ReadIntsUntilEndline_End }
 
 // ReadInts
 
@@ -116,7 +93,15 @@ struct ReadInts_Data
 	int number;
 };
 
-inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& list, ReadInts_Data& data)
+struct ReadInts_Params
+{
+	char until = 0;
+	char char1 = 0;
+	char char2 = 0;
+	char char3 = 0;
+};
+
+inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& list, ReadInts_Data& data, const ReadInts_Params& parseParam)
 {
 	while (bytes > 0)
 	{
@@ -126,7 +111,7 @@ inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& li
 			data.number *= 10;
 			data.number += *c - '0';
 		}
-		else if (*c == ' ' || *c == '\n')
+		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
 		{
 			if (data.hasNumber)
 				list.push_back(data.number);
@@ -134,8 +119,10 @@ inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& li
 			data.number = 0;
 			data.hasNumber = false;
 		}
-		else
-			exit(1); // Unexpected input, just exit
+		else if (*c == parseParam.until)
+		{
+			return true;
+		}
 
 		c++;
 		bytes--;
