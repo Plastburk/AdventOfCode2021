@@ -34,7 +34,7 @@ int Day5::RunA()
 			size_t x = x1;
 			size_t num = std::abs((long long)x2 - (long long)x1);
 
-			for (size_t i = 0; i <= num; i++, x += xDirection)
+			for (size_t j = 0; j <= num; j++, x += xDirection)
 				if (++map[y1 * dimensions + x] == 2)
 					total++;
 		}
@@ -44,7 +44,7 @@ int Day5::RunA()
 			size_t y = y1;
 			size_t num = std::abs((long long)y2 - (long long)y1);
 
-			for (size_t i = 0; i <= num; i++, y += yDirection)
+			for (size_t j = 0; j <= num; j++, y += yDirection)
 				if (++map[y * dimensions + x1] == 2)
 					total++;
 		}
@@ -75,7 +75,7 @@ int Day5::RunB()
 			size_t x = x1;
 			size_t num = std::abs((long long)x2 - (long long)x1);
 
-			for (size_t i = 0; i <= num; i++, x += xDirection)
+			for (size_t j = 0; j <= num; j++, x += xDirection)
 				if (++map[y1 * dimensions + x] == 2)
 					total++;
 		}
@@ -85,7 +85,7 @@ int Day5::RunB()
 			size_t y = y1;
 			size_t num = std::abs((long long)y2 - (long long)y1);
 
-			for (size_t i = 0; i <= num; i++, y += yDirection)
+			for (size_t j = 0; j <= num; j++, y += yDirection)
 				if (++map[y * dimensions + x1] == 2)
 					total++;
 		}
