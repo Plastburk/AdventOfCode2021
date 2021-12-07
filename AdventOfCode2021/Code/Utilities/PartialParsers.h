@@ -87,10 +87,11 @@ inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& l
 
 // ReadInts
 
+template<class IntT>
 struct ReadInts_Data
 {
 	bool hasNumber;
-	int number;
+	IntT number;
 };
 
 struct ReadInts_Params
@@ -101,7 +102,8 @@ struct ReadInts_Params
 	char char3 = 0;
 };
 
-inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& list, ReadInts_Data& data, const ReadInts_Params& parseParam)
+template<class IntT>
+inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<IntT>& list, ReadInts_Data<IntT>& data, const ReadInts_Params& parseParam)
 {
 	while (bytes > 0)
 	{
@@ -131,10 +133,15 @@ inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& li
 	return false;
 }
 
-inline void ReadInts_End(std::vector<int>& list, ReadInts_Data& data)
+template<class IntT>
+inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 {
 	if (data.hasNumber)
 		list.push_back(data.number);
 }
 
-#define ReadInts { ReadInts_Main, ReadInts_End }
+#define ReadInts { ReadInts_Main<int>, ReadInts_End<int> }
+#define ReadIntsT int, ReadInts_Data<int>, ReadInts_Params
+
+#define ReadUInt16s { ReadInts_Main<uint16_t>, ReadInts_End<uint16_t> }
+#define ReadUInt16sT uint16_t, ReadInts_Data<uint16_t>, ReadInts_Params

@@ -78,6 +78,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +95,7 @@
     <ClCompile Include="Code\Day2.cpp" />
     <ClCompile Include="Code\Day3.cpp" />
     <ClCompile Include="Code\Day4.cpp" />
+    <ClCompile Include="Code\Day5.cpp" />
     <ClCompile Include="Code\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +103,7 @@
     <ClInclude Include="Code\Day2.h" />
     <ClInclude Include="Code\Day3.h" />
     <ClInclude Include="Code\Day4.h" />
+    <ClInclude Include="Code\Day5.h" />
     <ClInclude Include="Code\Utilities\FullParsers.h" />
     <ClInclude Include="Code\Utilities\PartialParsers.h" />
     <ClInclude Include="Code\Utilities\Utilities.h" />

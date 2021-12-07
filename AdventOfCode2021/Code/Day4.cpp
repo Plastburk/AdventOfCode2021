@@ -8,10 +8,7 @@ void Day4::ReadInput(std::ifstream& stream)
 	input1.reserve(200);
 	input2.reserve(4000);
 
-	ReadPartialsFromStream<
-		int, ReadInts_Data, ReadInts_Params,
-		int, ReadInts_Data, ReadInts_Params
-	>(stream,
+	ReadPartialsFromStream<ReadIntsT,ReadIntsT>(stream,
 		input1, ReadInts, { '\n',  ',' },
 		input2, ReadInts, { 0, ' ', '\n' }
 	);
