@@ -28,6 +28,9 @@
     <ClCompile Include="Code\Day5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Day6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Day1.h">
@@ -52,6 +55,9 @@
       <Filter>Source Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Code\Day5.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Day6.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

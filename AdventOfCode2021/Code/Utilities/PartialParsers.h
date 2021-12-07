@@ -145,3 +145,6 @@ inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 
 #define ReadUInt16s { ReadInts_Main<uint16_t>, ReadInts_End<uint16_t> }
 #define ReadUInt16sT uint16_t, ReadInts_Data<uint16_t>, ReadInts_Params
+
+#define ReadUInt8s { ReadInts_Main<uint8_t>, ReadInts_End<uint8_t> }
+#define ReadUInt8sT uint8_t, ReadInts_Data<uint8_t>, ReadInts_Params
