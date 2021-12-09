@@ -148,3 +148,60 @@ inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 
 #define ReadUInt8s { ReadInts_Main<uint8_t>, ReadInts_End<uint8_t> }
 #define ReadUInt8sT uint8_t, ReadInts_Data<uint8_t>, ReadInts_Params
+
+
+// CountSetsOfLetters
+
+template<size_t Size>
+struct CharString
+{
+	uint8_t size;
+	std::array<char, Size> data;
+
+	bool Contains(char c) const
+	{
+		for (int i = 0; i < size; i++)
+			if (data[i] == c)
+				return true;
+		return false;
+	}
+};
+
+struct ReadCharArray_Params
+{
+	char char1 = 0;
+	char char2 = 0;
+	char char3 = 0;
+};
+
+template<size_t Size>
+inline bool ReadCharArray_Main(char*& c, std::streamsize& bytes, std::vector<CharString<Size>>& list, CharString<Size>& data, const ReadCharArray_Params& parseParam)
+{
+	while (bytes > 0)
+	{
+		if (*c >= 'a' && *c <= 'z')
+			data.data[data.size++] = *c;
+		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
+		{
+			if (data.size > 0)
+				list.push_back(data);
+
+			data.size = 0;
+		}
+
+		c++;
+		bytes--;
+	}
+
+	return false;
+}
+
+template<size_t Size>
+inline void ReadCharArray_End(std::vector<CharString<Size>>& list, CharString<Size>& data)
+{
+	if (data.size > 0)
+		list.push_back(data);
+}
+
+#define ReadCharArray(len) { ReadCharArray_Main<len>, ReadCharArray_End<len> }
+#define ReadCharArrayT(len) CharString<len>, CharString<len>, ReadCharArray_Params
