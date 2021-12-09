@@ -69,6 +69,8 @@
     <ClInclude Include="Code\Day7.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Day8.h" />
+    <ClInclude Include="Code\Day8.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
