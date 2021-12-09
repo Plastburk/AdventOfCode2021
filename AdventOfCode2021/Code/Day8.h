@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Utilities/Utilities.h"
-
 #include <vector>
-#include <array>
 #include <fstream>
 
 class Day8
@@ -15,5 +12,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<CharString<7>> input;
+	std::vector<uint8_t> input;
 };

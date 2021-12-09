@@ -61,7 +61,6 @@ inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& l
 		partial2.end(list2, data2);
 }
 
-
 template<class ListT1, class DataT1, class ParseParamT1>
 inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& list1, PartialFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1)
 {
@@ -149,44 +148,39 @@ inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 #define ReadUInt8s { ReadInts_Main<uint8_t>, ReadInts_End<uint8_t> }
 #define ReadUInt8sT uint8_t, ReadInts_Data<uint8_t>, ReadInts_Params
 
+// ReadCharsAsBits
 
-// CountSetsOfLetters
-
-template<size_t Size>
-struct CharString
+template<class IntT>
+struct ReadCharsAsBits_Data
 {
-	uint8_t size;
-	std::array<char, Size> data;
-
-	bool Contains(char c) const
-	{
-		for (int i = 0; i < size; i++)
-			if (data[i] == c)
-				return true;
-		return false;
-	}
+	bool hasNumber;
+	IntT number;
 };
 
-struct ReadCharArray_Params
+struct ReadCharsAsBits_Params
 {
 	char char1 = 0;
 	char char2 = 0;
 	char char3 = 0;
 };
 
-template<size_t Size>
-inline bool ReadCharArray_Main(char*& c, std::streamsize& bytes, std::vector<CharString<Size>>& list, CharString<Size>& data, const ReadCharArray_Params& parseParam)
+template<class IntT>
+inline bool ReadCharsAsBits_Main(char*& c, std::streamsize& bytes, std::vector<IntT>& list, ReadCharsAsBits_Data<IntT>& data, const ReadCharsAsBits_Params& parseParam)
 {
 	while (bytes > 0)
 	{
 		if (*c >= 'a' && *c <= 'z')
-			data.data[data.size++] = *c;
+		{
+			data.hasNumber = true;
+			data.number |= 1 << (*c - 'a');
+		}
 		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
 		{
-			if (data.size > 0)
-				list.push_back(data);
+			if (data.hasNumber)
+				list.push_back(data.number);
 
-			data.size = 0;
+			data.number = 0;
+			data.hasNumber = false;
 		}
 
 		c++;
@@ -196,12 +190,12 @@ inline bool ReadCharArray_Main(char*& c, std::streamsize& bytes, std::vector<Cha
 	return false;
 }
 
-template<size_t Size>
-inline void ReadCharArray_End(std::vector<CharString<Size>>& list, CharString<Size>& data)
+template<class IntT>
+inline void ReadCharsAsBits_End(std::vector<IntT>& list, ReadCharsAsBits_Data<IntT>& data)
 {
-	if (data.size > 0)
-		list.push_back(data);
+	if (data.hasNumber)
+		list.push_back(data.number);
 }
 
-#define ReadCharArray(len) { ReadCharArray_Main<len>, ReadCharArray_End<len> }
-#define ReadCharArrayT(len) CharString<len>, CharString<len>, ReadCharArray_Params
+#define ReadCharsAs8Bits { ReadCharsAsBits_Main<uint8_t>, ReadCharsAsBits_End<uint8_t> }
+#define ReadCharsAs8BitsT uint8_t, ReadCharsAsBits_Data<uint8_t>, ReadCharsAsBits_Params

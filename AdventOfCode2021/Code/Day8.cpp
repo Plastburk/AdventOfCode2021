@@ -1,16 +1,33 @@
 #include "Day8.h"
 #include "Utilities/Utilities.h"
 
-#include <array>
 #include <unordered_map>
-#include <unordered_set>
+#include <atomic>
+#include <ppl.h>
 
 void Day8::ReadInput(std::ifstream& stream)
 {
-	//input.reserve(2000);
-	ReadPartialsFromStream<ReadCharArrayT(7)>(stream,
-		input, ReadCharArray(7), { ' ', '\n' }
+	input.reserve(3000);
+	ReadPartialsFromStream<ReadCharsAs8BitsT>(stream,
+		input, ReadCharsAs8Bits, { ' ', '\n' }
 	);
+}
+
+inline int AmountOfChars(uint8_t charSet)
+{
+	char amount = 0;
+	while (charSet != 0)
+	{
+		amount += charSet & 0x1;
+		charSet >>= 1;
+	}
+
+	return amount;
+}
+
+inline bool BIsSubsetOfA(uint8_t a, uint8_t b)
+{
+	return (b | a) == a;
 }
 
 int Day8::RunA()
@@ -22,8 +39,9 @@ int Day8::RunA()
 	{
 		for (size_t j = 10; j < 14; j++)
 		{
-			const auto& value = input[i * 14 + j];
-			if (value.size == 2 || value.size == 3 || value.size == 4 || value.size == 7)
+			char amount = AmountOfChars(input[i * 14 + j]);
+
+			if (amount == 2 || amount == 3 || amount == 4 || amount == 7)
 				count++;
 		}
 	}
@@ -33,95 +51,83 @@ int Day8::RunA()
 
 int Day8::RunB()
 {
-	int total = 0;
+	std::atomic<int> total = 0;
 
 	size_t sequences = input.size() / 14;
-	for (size_t i = 0; i < sequences; i++)
-	{
-		std::unordered_map<int, const CharString<7>*> known;
-
-		// Find 1, 4, 7, 8
-		for (size_t j = 0; j < 10; j++)
+	concurrency::parallel_for(size_t(0), sequences, [&](size_t i)
 		{
-			const auto& value = input[i * 14 + j];
+			std::unordered_map<int, uint8_t> known;
 
-			if (value.size == 2)
-				known[1] = &value;
-			else if (value.size == 4)
-				known[4] = &value;
-			else if (value.size == 3)
-				known[7] = &value;
-			else if (value.size == 7)
-				known[8] = &value;
-
-			if (known.size() == 4)
-				break;
-		}
-
-		// Find 0, 6, 9
-		for (size_t j = 0; j < 10; j++)
-		{
-			const auto& value = input[i * 14 + j];
-
-			if (value.size != 6)
-				continue;
-
-			// TODO Can probably optimize the Contains checks
-			const auto& known1 = known[1]->data;
-			const auto& known4 = known[4]->data;
-			if (value.Contains(known4[0]) && value.Contains(known4[1]) && value.Contains(known4[2]) && value.Contains(known4[3]))
-				known[9] = &value;
-			else if (value.Contains(known1[0]) && value.Contains(known1[1]))
-				known[0] = &value;
-			else
-				known[6] = &value;
-		}
-
-		// Find 2, 3, 5
-		for (size_t j = 0; j < 10; j++)
-		{
-			const auto& value = input[i * 14 + j];
-
-			if (value.size != 5)
-				continue;
-
-			const auto& known1 = known[1]->data;
-			if (value.Contains(known1[0]) && value.Contains(known1[1]))
-				known[3] = &value;
-			else if (known[6]->Contains(value.data[0]) && known[6]->Contains(value.data[1]) && known[6]->Contains(value.data[2]) && known[6]->Contains(value.data[3]) && known[6]->Contains(value.data[4]))
-				known[5] = &value;
-			else
-				known[2] = &value;
-		}
-
-		// Find actual number
-		int number = 0;
-		for (size_t j = 10; j < 14; j++)
-		{
-			const auto& value = input[i * 14 + j];
-
-			std::unordered_set<char> vSet;
-			for (int x = 0; x < value.size; x++)
-				vSet.insert(value.data[x]);
-
-			// TODO Optimize
-			for (int n = 0; n < 10; n++)
+			// Find 1, 4, 7, 8
+			for (size_t j = 0; j < 10; j++)
 			{
-				std::unordered_set<char> nSet;
-				for (int x = 0; x < known[n]->size; x++)
-					nSet.insert(known[n]->data[x]);
+				const auto& value = input[i * 14 + j];
+				int amount = AmountOfChars(value);
 
-				if (vSet == nSet)
-				{
-					number *= 10;
-					number += n;
+				if (amount == 2)
+					known[1] = value;
+				else if (amount == 4)
+					known[4] = value;
+				else if (amount == 3)
+					known[7] = value;
+				else if (amount == 7)
+					known[8] = value;
+
+				if (known.size() == 4)
 					break;
-				}
 			}
-		}
 
-		total += number;
-	}
+			// Find 0, 6, 9
+			for (size_t j = 0; j < 10; j++)
+			{
+				const auto& value = input[i * 14 + j];
+				int amount = AmountOfChars(value);
+
+				if (amount != 6)
+					continue;
+
+				if (BIsSubsetOfA(value, known[4]))
+					known[9] = value;
+				else if (BIsSubsetOfA(value, known[1]))
+					known[0] = value;
+				else
+					known[6] = value;
+			}
+
+			// Find 2, 3, 5
+			for (size_t j = 0; j < 10; j++)
+			{
+				const auto& value = input[i * 14 + j];
+				int amount = AmountOfChars(value);
+
+				if (amount != 5)
+					continue;
+
+				if (BIsSubsetOfA(value, known[1]))
+					known[3] = value;
+				else if (BIsSubsetOfA(known[6], value))
+					known[5] = value;
+				else
+					known[2] = value;
+			}
+
+			// Find actual number
+			int number = 0;
+			for (size_t j = 10; j < 14; j++)
+			{
+				const auto& value = input[i * 14 + j];
+
+				for (int n = 0; n < 10; n++)
+					if (value == known[n])
+					{
+						number *= 10;
+						number += n;
+						break;
+					}
+			}
+
+			total.fetch_add(number);
+		});
 
 	return total;
 }

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <ppl.h>
 
 #define CASE_DAY(day) case day: \
 	{ \
@@ -23,6 +24,8 @@
 
 int main(int argc, char* argv[])
 {
+	Concurrency::CurrentScheduler::Create(Concurrency::SchedulerPolicy(1, Concurrency::MaxConcurrency, 8));
+
 	int iterations = ToInt(argv[1]);
 
 	for (int i = 0; i < iterations; i++)
