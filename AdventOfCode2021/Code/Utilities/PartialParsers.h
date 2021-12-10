@@ -199,3 +199,45 @@ inline void ReadCharsAsBits_End(std::vector<IntT>& list, ReadCharsAsBits_Data<In
 
 #define ReadCharsAs8Bits { ReadCharsAsBits_Main<uint8_t>, ReadCharsAsBits_End<uint8_t> }
 #define ReadCharsAs8BitsT uint8_t, ReadCharsAsBits_Data<uint8_t>, ReadCharsAsBits_Params
+
+// Read2DMap
+
+struct Read2DMap_Data
+{
+	bool hasWidth;
+	uint8_t width;
+};
+
+struct Read2DMap_Params
+{
+};
+
+inline bool Read2DMap_Main(char*& c, std::streamsize& bytes, std::vector<uint8_t>& list, Read2DMap_Data& data, const Read2DMap_Params& parseParam)
+{
+	while (bytes > 0)
+	{
+		if (*c >= '0' && *c <= '9')
+		{
+			if (!data.hasWidth)
+				data.width++;
+			list.push_back((*c - '0'));
+		}
+		else if (*c == '\n')
+		{
+			data.hasWidth = true;
+		}
+
+		c++;
+		bytes--;
+	}
+
+	return false;
+}
+
+inline void Read2DMap_End(std::vector<uint8_t>& list, Read2DMap_Data& data)
+{
+	list.push_back(data.width);
+}
+
+#define Read2DMap { Read2DMap_Main, Read2DMap_End }
+#define Read2DMapT uint8_t, Read2DMap_Data, Read2DMap_Params
