@@ -12,5 +12,6 @@ public:
 	uint64_t RunB();
 
 private:
-	std::vector<std::string> input;
+	char input[30000];
+	int inputSize;
 };

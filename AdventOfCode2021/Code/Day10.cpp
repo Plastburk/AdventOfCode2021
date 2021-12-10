@@ -5,11 +5,8 @@
 
 void Day10::ReadInput(std::ifstream& stream)
 {
-	//input.reserve(12000);
-	/*ReadPartialsFromStream<Read2DMapT>(stream,
-		input, Read2DMap, {}
-	);*/
-	ReadStringsFromStream(stream, input);
+	stream.read(input, sizeof(input));
+	inputSize = (int)stream.gcount();
 }
 
 inline char RightToLeft(char c)
@@ -37,23 +34,28 @@ inline int ScoreForA(char c)
 
 int Day10::RunA()
 {
+	std::vector<char> stack;
+
 	int total = 0;
-	for (int i = 0; i < input.size(); i++)
+	bool corrupted = false;
+	for (int i = 0; i < inputSize; i++)
 	{
-		std::vector<char> stack;
-		const auto& str = input[i];
-		for (int j = 0; j < str.length(); j++)
+		char c = input[i];
+		if (c == '\n')
 		{
-			char c = str[j];
+			stack.clear();
+			corrupted = false;
+		}
+		else if (!corrupted)
+		{
 			if (c == '{' || c == '(' || c == '[' || c == '<')
-				stack.push_back(str[j]);
+				stack.push_back(c);
 			else
 			{
-				char cc = RightToLeft(c);
 				if (stack.back() != RightToLeft(c))
 				{
 					total += ScoreForA(c);
-					break;
+					corrupted = true;
 				}
 				else
 					stack.pop_back();
@@ -83,43 +85,43 @@ inline int ScoreForB(char c)
 uint64_t Day10::RunB()
 {
 	std::vector<uint64_t> scores;
-	for (int i = 0; i < input.size(); i++)
+	std::vector<char> stack;
+
+	bool corrupted = false;
+	for (int i = 0; i < inputSize; i++)
 	{
-		std::vector<char> stack;
-		const auto& str = input[i];
-		bool corrupted = false;
-		for (int j = 0; j < str.length(); j++)
+		char c = input[i];
+		if (c == '\n')
 		{
-			char c = str[j];
+			if (!corrupted)
+			{
+				uint64_t score = 0;
+				while (!stack.empty())
+				{
+					score = score * 5 + ScoreForB(stack.back());
+					stack.pop_back();
+				}
+
+				scores.push_back(score);
+			}
+
+			stack.clear();
+			corrupted = false;
+		}
+		else if (!corrupted)
+		{
 			if (c == '{' || c == '(' || c == '[' || c == '<')
-				stack.push_back(str[j]);
+				stack.push_back(c);
 			else
 			{
-				char cc = RightToLeft(c);
 				if (stack.back() != RightToLeft(c))
-				{
 					corrupted = true;
-					break;
-				}
 				else
 					stack.pop_back();
 			}
 		}
-
-		if (corrupted)
-			continue;
-
-		uint64_t score = 0;
-		while (!stack.empty())
-		{
-			score = score * 5 + ScoreForB(stack.back());
-			stack.pop_back();
-		}
-
-		scores.push_back(score);
 	}
 
 	std::sort(scores.begin(), scores.end());
-
 	return scores[scores.size() / 2];
 }
