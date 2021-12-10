@@ -12,5 +12,8 @@ public:
 	int RunB();
 
 private:
-	std::vector<uint8_t> input;
+	char input[30000];
+	int inputSize;
+	int width;
+	int height;
 };
