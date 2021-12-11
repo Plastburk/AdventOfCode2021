@@ -13,7 +13,7 @@ public:
 
 private:
 	char input[30000];
-	int inputSize;
-	int width;
-	int height;
+	int inputSize = 0;
+	int width = 0;
+	int height = 0;
 };
