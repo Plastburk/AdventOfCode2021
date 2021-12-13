@@ -109,7 +109,6 @@ inline int RecursivelyTraverseA(PathNode* pathNode)
 
 int Day12::RunA()
 {
-	return 0;
 	return RecursivelyTraverseA(&input[0]);
 }
 
@@ -138,6 +137,5 @@ inline int RecursivelyTraverseB(PathNode* pathNode, bool smallVisitedMultipleTim
 
 int Day12::RunB()
 {
-	//return 0;
 	return RecursivelyTraverseB(&input[0], false);
 }
