@@ -157,7 +157,7 @@ inline int RecursivelyTraverseB(PathNode* pathNode, bool smallVisitedMultipleTim
 	}
 
 	pathNode->Visited--;
-	cache.insert_or_assign(cacheKey, total);
+	cache.insert({ cacheKey, total });
 	return total;
 }
 
