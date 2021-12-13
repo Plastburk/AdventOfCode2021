@@ -4,14 +4,21 @@
 #include <fstream>
 #include <string>
 
+enum class PathNodeType : uint8_t
+{
+	Start,
+	End,
+	BigRoom,
+	SmallRoom
+};
+
 struct PathNode
 {
 #if _DEBUG
 	std::string Name;
 #endif
-	bool IsBigRoom;
-	bool IsStart;
-	bool IsEnd;
+	uint8_t Id;
+	PathNodeType Type;
 	uint8_t Visited;
 	std::vector<PathNode*> Neighbors;
 };

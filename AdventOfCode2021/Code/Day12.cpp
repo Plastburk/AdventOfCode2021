@@ -11,18 +11,18 @@ inline int CreateNode(std::vector<PathNode>& input, std::unordered_map<uint16_t,
 	{
 		uint16_t name = (nameBuffer[0] << 8) + nameBuffer[1];
 		auto result = nameToId.try_emplace(name, nextId);
-		int id = (*result.first).second;
+		uint8_t id = (*result.first).second;
 
-		bool isBigRoom = nameBuffer[0] < 'a';
+		PathNodeType type = nameBuffer[0] < 'a' ? PathNodeType::BigRoom : PathNodeType::SmallRoom;
 
 		if (result.second)
 		{
-			nextId++;
 #if _DEBUG
-			input.push_back({ std::string(nameBuffer, nameLength), isBigRoom, false, false, 0 });
+			input.push_back({ std::string(nameBuffer, nameLength), id, type, 0 });
 #else
-			input.push_back({ isBigRoom, false, false, 0 });
+			input.push_back({ id, type, 0 });
 #endif
+			nextId++;
 		}
 		return id;
 	}
@@ -45,12 +45,12 @@ void Day12::ReadInput(std::ifstream& stream)
 	uint8_t leftNodeId = 0;
 	uint8_t rightNodeId = 0;
 #if _DEBUG
-	input.push_back({ "start", false, true, false, 0 });
-	input.push_back({ "end", false, false, true, 0 });
+	input.push_back({ "start", 0, PathNodeType::Start, 0 });
+	input.push_back({ "end", 1, PathNodeType::End, 0 });
 	std::string left;
 #else
-	input.push_back({ false, true, false, 0 });
-	input.push_back({ false, false, true, 0 });
+	input.push_back({ 0, PathNodeType::Start, 0 });
+	input.push_back({ 1, PathNodeType::End, 0 });
 #endif
 
 	while (bytes > 0)
@@ -89,53 +89,80 @@ void Day12::ReadInput(std::ifstream& stream)
 	}
 }
 
+typedef std::unordered_map<uint64_t, int> CacheMap;
+
+inline uint64_t CreateCacheKey(uint8_t currentNode, uint32_t visited, bool smallVisitedMultipleTimes)
+{
+	return ((uint64_t)smallVisitedMultipleTimes << (8 + 32)) | ((uint64_t)visited << 8) | currentNode;
+}
+
+inline void AddToVisited(uint32_t& visited, uint8_t index)
+{
+	visited |= (0x1 << index);
+}
+
 inline int RecursivelyTraverseA(PathNode* pathNode)
 {
-	if (pathNode->IsEnd)
+	if (pathNode->Type == PathNodeType::End)
 		return 1;
 
-	int total = 0;
 	pathNode->Visited++;
+
+	int total = 0;
 	for (auto neighbor : pathNode->Neighbors)
 	{
-		if (!neighbor->IsBigRoom && neighbor->Visited >= 1)
+		if (neighbor->Type != PathNodeType::BigRoom && neighbor->Visited >= 1)
 			continue;
 
 		total += RecursivelyTraverseA(neighbor);
 	}
+
 	pathNode->Visited--;
 	return total;
 }
 
 int Day12::RunA()
 {
+	// No cache on A, as the overhead of the cache seems to cost more than we gain.
 	return RecursivelyTraverseA(&input[0]);
 }
 
-inline int RecursivelyTraverseB(PathNode* pathNode, bool smallVisitedMultipleTimes)
+inline int RecursivelyTraverseB(PathNode* pathNode, bool smallVisitedMultipleTimes, uint32_t visited, CacheMap& cache)
 {
-	if (pathNode->IsEnd)
+	if (pathNode->Type == PathNodeType::End)
 		return 1;
 
-	int total = 0;
+	uint64_t cacheKey = CreateCacheKey(pathNode->Id, visited, smallVisitedMultipleTimes);
+	auto it = cache.find(cacheKey);
+	if (it != cache.end())
+	{
+		return (*it).second;
+	}
+
+	AddToVisited(visited, pathNode->Id);
 	pathNode->Visited++;
+
+	int total = 0;
 	for (auto neighbor : pathNode->Neighbors)
 	{
-		if (!neighbor->IsBigRoom && neighbor->Visited >= 1)
+		if (neighbor->Type != PathNodeType::BigRoom && neighbor->Visited >= 1)
 		{
-			if (smallVisitedMultipleTimes || neighbor->IsStart)
+			if (smallVisitedMultipleTimes || neighbor->Type == PathNodeType::Start)
 				continue;
 
-			total += RecursivelyTraverseB(neighbor, true);
+			total += RecursivelyTraverseB(neighbor, true, visited, cache);
 		}
 		else
-			total += RecursivelyTraverseB(neighbor, smallVisitedMultipleTimes);
+			total += RecursivelyTraverseB(neighbor, smallVisitedMultipleTimes, visited, cache);
 	}
+
 	pathNode->Visited--;
+	cache.insert_or_assign(cacheKey, total);
 	return total;
 }
 
 int Day12::RunB()
 {
-	return RecursivelyTraverseB(&input[0], false);
+	CacheMap cache;
+	return RecursivelyTraverseB(&input[0], false, 0, cache);
 }
