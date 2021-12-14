@@ -8,7 +8,7 @@ void Day13::ReadInput(std::ifstream& stream)
 	input1.reserve(1000);
 	input2.reserve(30);
 
-	ReadPartialsFromStream<ReadVec2DT, ReadTypeAndIntT>(stream,
+	ReadFuncFromStream<ReadVec2DT, ReadTypeAndIntT>(stream,
 		input1, ReadVec2D, { 'f',  ',', '\n' },
 		input2, ReadTypeAndInt, { 'x', 'y' }
 	);

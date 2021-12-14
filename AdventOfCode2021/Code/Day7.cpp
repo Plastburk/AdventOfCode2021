@@ -6,7 +6,7 @@
 void Day7::ReadInput(std::ifstream& stream)
 {
 	input.reserve(2000);
-	ReadPartialsFromStream<ReadUInt16sT>(stream,
+	ReadFuncFromStream<ReadUInt16sT>(stream,
 		input, ReadUInt16s, { 0, ',' }
 	);
 }

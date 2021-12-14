@@ -8,20 +8,20 @@
 // Boilerplate
 
 template <class ListT, class DataT, class ParseParamT>
-using PartialFunc = std::function<bool(char*&, std::streamsize&, std::vector<ListT>&, DataT&, const ParseParamT&)>;
+using ParseFunc = std::function<bool(char*&, std::streamsize&, std::vector<ListT>&, DataT&, const ParseParamT&)>;
 
 template <class ListT, class DataT>
-using PartialFuncEnd = std::function<void(std::vector<ListT>&, DataT&)>;
+using ParseFuncEnd = std::function<void(std::vector<ListT>&, DataT&)>;
 
 template<class ListT, class DataT, class ParseParamT>
-struct PartialFuncContainer
+struct ParseFuncContainer
 {
-	PartialFunc<ListT, DataT, ParseParamT> main;
-	PartialFuncEnd<ListT, DataT> end;
+	ParseFunc<ListT, DataT, ParseParamT> main;
+	ParseFuncEnd<ListT, DataT> end;
 };
 
 template<class ListT1, class DataT1, class ParseParamT1, class ListT2, class DataT2, class ParseParamT2>
-inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& list1, PartialFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1, std::vector<ListT2>& list2, PartialFuncContainer<ListT2, DataT2, ParseParamT2> partial2, const ParseParamT2& parseParam2)
+inline void ReadFuncFromStream(std::ifstream& stream, std::vector<ListT1>& list1, ParseFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1, std::vector<ListT2>& list2, ParseFuncContainer<ListT2, DataT2, ParseParamT2> partial2, const ParseParamT2& parseParam2)
 {
 	char buffer[8192];
 
@@ -62,7 +62,7 @@ inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& l
 }
 
 template<class ListT1, class DataT1, class ParseParamT1>
-inline void ReadPartialsFromStream(std::ifstream& stream, std::vector<ListT1>& list1, PartialFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1)
+inline void ReadFuncFromStream(std::ifstream& stream, std::vector<ListT1>& list1, ParseFuncContainer<ListT1, DataT1, ParseParamT1> partial1, const ParseParamT1& parseParam1)
 {
 	char buffer[8192];
 

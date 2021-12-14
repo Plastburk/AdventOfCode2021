@@ -8,7 +8,7 @@
 void Day8::ReadInput(std::ifstream& stream)
 {
 	input.reserve(3000);
-	ReadPartialsFromStream<ReadCharsAs8BitsT>(stream,
+	ReadFuncFromStream<ReadCharsAs8BitsT>(stream,
 		input, ReadCharsAs8Bits, { ' ', '\n' }
 	);
 }
