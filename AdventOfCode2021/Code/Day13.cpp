@@ -1,10 +1,6 @@
 #include "Day13.h"
 #include "Utilities/Utilities.h"
 
-#include <unordered_set>
-#include <tuple>
-#include <iostream>
-
 void Day13::ReadInput(std::ifstream& stream)
 {
 	input1.reserve(1000);
