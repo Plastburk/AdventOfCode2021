@@ -20,7 +20,7 @@ inline int CreateNode(std::vector<PathNode>& Input, std::unordered_map<uint16_t,
 #if _DEBUG
 			Input.push_back({ std::string(nameBuffer, nameLength), id, type, 0 });
 #else
-			input.push_back({ id, type, 0 });
+			Input.push_back({ id, type, 0 });
 #endif
 			nextId++;
 		}
@@ -49,8 +49,8 @@ void Day12::ReadInput(std::ifstream& stream)
 	Input.push_back({ "end", 1, PathNodeType::End, 0 });
 	std::string left;
 #else
-	input.push_back({ 0, PathNodeType::Start, 0 });
-	input.push_back({ 1, PathNodeType::End, 0 });
+	Input.push_back({ 0, PathNodeType::Start, 0 });
+	Input.push_back({ 1, PathNodeType::End, 0 });
 #endif
 
 	while (bytes > 0)
