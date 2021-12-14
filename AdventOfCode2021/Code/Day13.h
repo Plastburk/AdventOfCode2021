@@ -14,6 +14,6 @@ public:
 	void RunB();
 
 private:
-	std::vector<Vec2D> input1;
-	std::vector<std::tuple<char, int>> input2;
+	std::vector<Vec2D> Input1;
+	std::vector<std::tuple<char, int>> Input2;
 };

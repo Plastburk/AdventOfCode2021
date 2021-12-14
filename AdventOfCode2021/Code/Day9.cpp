@@ -5,51 +5,51 @@
 
 void Day9::ReadInput(std::ifstream& stream)
 {
-	stream.read(input, sizeof(input));
-	inputSize = (int)stream.gcount();
+	stream.read(Input, sizeof(Input));
+	InputSize = (int)stream.gcount();
 
-	for (int i = 0; i < inputSize; i++)
-		if (input[i] == '\n')
+	for (int i = 0; i < InputSize; i++)
+		if (Input[i] == '\n')
 		{
-			width = i;
+			Width = i;
 			break;
 		}
 
 #pragma warning(push)
 #pragma warning(disable:6385)
-	if (input[inputSize - 1] == '\n')
-		height = inputSize / (width + 1);
+	if (Input[InputSize - 1] == '\n')
+		Height = InputSize / (Width + 1);
 	else
-		height = inputSize / (width);
+		Height = InputSize / (Width);
 #pragma warning(pop)
 }
 
-inline char GetValue(const char* input, int x, int y, int width)
+inline char GetValue(const char* Input, int x, int y, int width)
 {
 	int i = y * (width + 1) + x;
-	return input[i];
+	return Input[i];
 }
 
 int Day9::RunA()
 {
 	int total = 0;
 
-	for (int y = 0; y < height; y++)
-		for (int x = 0; x < width; x++)
+	for (int y = 0; y < Height; y++)
+		for (int x = 0; x < Width; x++)
 		{
-			char self = GetValue(input, x, y, width);
+			char self = GetValue(Input, x, y, Width);
 
-			if ((y == 0 || GetValue(input, x, y - 1, width) > self) &&
-				(x == 0 || GetValue(input, x - 1, y, width) > self) &&
-				(x == width - 1 || GetValue(input, x + 1, y, width) > self) &&
-				(y == height - 1 || GetValue(input, x, y + 1, width) > self))
+			if ((y == 0 || GetValue(Input, x, y - 1, Width) > self) &&
+				(x == 0 || GetValue(Input, x - 1, y, Width) > self) &&
+				(x == Width - 1 || GetValue(Input, x + 1, y, Width) > self) &&
+				(y == Height - 1 || GetValue(Input, x, y + 1, Width) > self))
 				total += (self - '0') + 1;
 		}
 
 	return total;
 }
 
-inline int TraverseBasin(char* input, size_t i, size_t width, size_t height)
+inline int TraverseBasin(char* Input, size_t i, size_t width, size_t height)
 {
 	std::vector<Vec2D> stack;
 	stack.push_back(Vec2D(int(i % (width + 1)), int(i / (width + 1))));
@@ -61,11 +61,11 @@ inline int TraverseBasin(char* input, size_t i, size_t width, size_t height)
 		stack.pop_back();
 
 		size_t i = pos.Y * (width + 1) + pos.X;
-		if (input[i] == '9')
+		if (Input[i] == '9')
 			continue;
 
 		basinSize++;
-		input[i] = '9';
+		Input[i] = '9';
 
 		if (pos.Y > 0)
 			stack.push_back(Vec2D(pos.X, pos.Y - 1));
@@ -84,11 +84,11 @@ int Day9::RunB()
 {
 	std::multiset<int> largest;
 
-	for (size_t i = 0; i < inputSize; i++)
+	for (size_t i = 0; i < InputSize; i++)
 	{
-		if (input[i] < '9' && input[i] != '\n')
+		if (Input[i] < '9' && Input[i] != '\n')
 		{
-			int size = TraverseBasin(input, i, width, height);
+			int size = TraverseBasin(Input, i, Width, Height);
 			if (largest.size() < 3)
 				largest.insert(size);
 			else if (size > *largest.begin())

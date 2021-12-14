@@ -3,9 +3,9 @@
 
 void Day5::ReadInput(std::ifstream& stream)
 {
-	input.reserve(4000);
+	Input.reserve(4000);
 	ReadFuncFromStream<ReadUInt16sT>(stream,
-		input, ReadUInt16s, { 0, ',', ' ', '\n' }
+		Input, ReadUInt16s, { 0, ',', ' ', '\n' }
 	);
 }
 
@@ -15,12 +15,12 @@ int Day5::RunA()
 	std::vector<std::uint8_t> map(dimensions * dimensions, 0);
 
 	int total = 0;
-	for (size_t i = 0; i < input.size(); i += 4)
+	for (size_t i = 0; i < Input.size(); i += 4)
 	{
-		size_t x1 = input[i];
-		size_t y1 = input[i + 1];
-		size_t x2 = input[i + 2];
-		size_t y2 = input[i + 3];
+		size_t x1 = Input[i];
+		size_t y1 = Input[i + 1];
+		size_t x2 = Input[i + 2];
+		size_t y2 = Input[i + 3];
 
 		if (x1 != x2 && y1 != y2)
 			continue;
@@ -59,12 +59,12 @@ int Day5::RunB()
 	std::vector<uint8_t> map(dimensions * dimensions, 0);
 
 	int total = 0;
-	for (size_t i = 0; i < input.size(); i += 4)
+	for (size_t i = 0; i < Input.size(); i += 4)
 	{
-		size_t x1 = input[i];
-		size_t y1 = input[i + 1];
-		size_t x2 = input[i + 2];
-		size_t y2 = input[i + 3];
+		size_t x1 = Input[i];
+		size_t y1 = Input[i + 1];
+		size_t x2 = Input[i + 2];
+		size_t y2 = Input[i + 3];
 
 		int xDirection = (x2 < x1) ? -1 : 1;
 		int yDirection = (y2 < y1) ? -1 : 1;

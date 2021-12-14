@@ -3,22 +3,22 @@
 
 void Day11::ReadInput(std::ifstream& stream)
 {
-	stream.read(input, sizeof(input));
-	inputSize = (int)stream.gcount();
+	stream.read(Input, sizeof(Input));
+	InputSize = (int)stream.gcount();
 
-	for (int i = 0; i < inputSize; i++)
-		if (input[i] == '\n')
+	for (int i = 0; i < InputSize; i++)
+		if (Input[i] == '\n')
 		{
-			width = i;
+			Width = i;
 			break;
 		}
 
 #pragma warning(push)
 #pragma warning(disable:6385)
-	if (input[inputSize - 1] == '\n')
-		height = inputSize / (width + 1);
+	if (Input[InputSize - 1] == '\n')
+		Height = InputSize / (Width + 1);
 	else
-		height = inputSize / (width);
+		Height = InputSize / (Width);
 #pragma warning(pop)
 }
 
@@ -86,14 +86,14 @@ inline int PerformStep(std::vector<char>& map, int width, int height)
 int Day11::RunA()
 {
 	std::vector<char> map;
-	int totalSize = width * height;
+	int totalSize = Width * Height;
 	map.resize(totalSize);
-	for (int y = 0; y < height; y++)
-		memcpy(map.data() + ((size_t)y * width), input + (y * ((size_t)width + 1)), width * sizeof(char));
+	for (int y = 0; y < Height; y++)
+		memcpy(map.data() + ((size_t)y * Width), Input + (y * ((size_t)Width + 1)), Width * sizeof(char));
 
 	int flashes = 0;
 	for (int step = 0; step < 100; step++)
-		flashes += PerformStep(map, width, height);
+		flashes += PerformStep(map, Width, Height);
 
 	return flashes;
 }
@@ -101,14 +101,14 @@ int Day11::RunA()
 int Day11::RunB()
 {
 	std::vector<char> map;
-	int totalSize = width * height;
+	int totalSize = Width * Height;
 	map.resize(totalSize);
-	for (int y = 0; y < height; y++)
-		memcpy(map.data() + ((size_t)y * width), input + (y * ((size_t)width + 1)), width * sizeof(char));
+	for (int y = 0; y < Height; y++)
+		memcpy(map.data() + ((size_t)y * Width), Input + (y * ((size_t)Width + 1)), Width * sizeof(char));
 
 	for (int step = 0;; step++)
 	{
-		int flashes = PerformStep(map, width, height);
+		int flashes = PerformStep(map, Width, Height);
 		if (flashes == totalSize)
 			return step + 1;
 	}

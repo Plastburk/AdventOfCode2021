@@ -32,5 +32,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<PathNode> input;
+	std::vector<PathNode> Input;
 };

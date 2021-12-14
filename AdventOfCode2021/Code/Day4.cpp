@@ -6,21 +6,21 @@
 
 void Day4::ReadInput(std::ifstream& stream)
 {
-	input1.reserve(200);
-	input2.reserve(4000);
+	Input1.reserve(200);
+	Input2.reserve(4000);
 
 	ReadFuncFromStream<ReadIntsT,ReadIntsT>(stream,
-		input1, ReadInts, { '\n',  ',' },
-		input2, ReadInts, { 0, ' ', '\n' }
+		Input1, ReadInts, { '\n',  ',' },
+		Input2, ReadInts, { 0, ' ', '\n' }
 	);
 
 	// Remap boards so each number is the turn that number will be called instead
 	std::unordered_map<int, int> valueToTurn;
-	for (int i = 0; i < input1.size(); i++)
-		valueToTurn[input1[i]] = i;
+	for (int i = 0; i < Input1.size(); i++)
+		valueToTurn[Input1[i]] = i;
 
-	for (int i = 0; i < input2.size(); i++)
-		input2[i] = valueToTurn[input2[i]];
+	for (int i = 0; i < Input2.size(); i++)
+		Input2[i] = valueToTurn[Input2[i]];
 }
 
 inline int FindWinningTurn(std::vector<int>::iterator startOfBoard)
@@ -70,13 +70,13 @@ inline int SumUnmarkedNumbers(int* startOfBoard, const std::vector<int>& drawnNu
 int Day4::RunA()
 {
 	const size_t numbersPerBoard = 5 * 5;
-	const size_t boards = input2.size() / numbersPerBoard;
+	const size_t boards = Input2.size() / numbersPerBoard;
 
 	size_t winningBoard = -1;
 	int winningTurn = INT_MAX;
 	for (size_t board = 0; board < boards; board++)
 	{
-		int turn = FindWinningTurn(input2.begin() + numbersPerBoard * board);
+		int turn = FindWinningTurn(Input2.begin() + numbersPerBoard * board);
 		if (turn < winningTurn)
 		{
 			winningTurn = turn;
@@ -84,20 +84,20 @@ int Day4::RunA()
 		}
 	}
 
-	int sum = SumUnmarkedNumbers(&input2[numbersPerBoard * winningBoard], input1, winningTurn);
-	return sum * input1[winningTurn];
+	int sum = SumUnmarkedNumbers(&Input2[numbersPerBoard * winningBoard], Input1, winningTurn);
+	return sum * Input1[winningTurn];
 }
 
 int Day4::RunB()
 {
 	const size_t numbersPerBoard = 5 * 5;
-	const size_t boards = input2.size() / numbersPerBoard;
+	const size_t boards = Input2.size() / numbersPerBoard;
 
 	size_t losingBoard = -1;
 	int losingTurn = -1;
 	for (size_t board = 0; board < boards; board++)
 	{
-		int turn = FindWinningTurn(input2.begin() + numbersPerBoard * board);
+		int turn = FindWinningTurn(Input2.begin() + numbersPerBoard * board);
 		if (turn > losingTurn)
 		{
 			losingTurn = turn;
@@ -105,6 +105,6 @@ int Day4::RunB()
 		}
 	}
 
-	int sum = SumUnmarkedNumbers(&input2[numbersPerBoard * losingBoard], input1, losingTurn);
-	return sum * input1[losingTurn];
+	int sum = SumUnmarkedNumbers(&Input2[numbersPerBoard * losingBoard], Input1, losingTurn);
+	return sum * Input1[losingTurn];
 }

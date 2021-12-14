@@ -5,8 +5,8 @@
 
 void Day10::ReadInput(std::ifstream& stream)
 {
-	stream.read(input, sizeof(input));
-	inputSize = (int)stream.gcount();
+	stream.read(Input, sizeof(Input));
+	InputSize = (int)stream.gcount();
 }
 
 inline char RightToLeft(char c)
@@ -38,9 +38,9 @@ int Day10::RunA()
 
 	int total = 0;
 	bool corrupted = false;
-	for (int i = 0; i < inputSize; i++)
+	for (int i = 0; i < InputSize; i++)
 	{
-		char c = input[i];
+		char c = Input[i];
 		if (c == '\n')
 		{
 			stack.clear();
@@ -88,9 +88,9 @@ uint64_t Day10::RunB()
 	std::vector<char> stack;
 
 	bool corrupted = false;
-	for (int i = 0; i < inputSize; i++)
+	for (int i = 0; i < InputSize; i++)
 	{
-		char c = input[i];
+		char c = Input[i];
 		if (c == '\n')
 		{
 			if (!corrupted)

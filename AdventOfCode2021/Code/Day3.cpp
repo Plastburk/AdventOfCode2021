@@ -3,32 +3,32 @@
 
 void Day3::ReadInput(std::ifstream& stream)
 {
-	input.reserve(2000);
-	ReadBitsFromStream(stream, input, bits);
+	Input.reserve(2000);
+	ReadBitsFromStream(stream, Input, Bits);
 }
 
 int Day3::RunA()
 {
-	std::vector<int> count(bits, 0);
-	for (int value : input)
+	std::vector<int> count(Bits, 0);
+	for (int value : Input)
 	{
-		for (int i = 0; i < bits; i++)
+		for (int i = 0; i < Bits; i++)
 			count[i] += (value & (0x1 << i)) > 0;
 	}
 
-	size_t halfSize = input.size() / 2;
+	size_t halfSize = Input.size() / 2;
 	int gamma = 0;
-	for (int i = 0; i < bits; i++)
+	for (int i = 0; i < Bits; i++)
 		gamma |= ((count[i] > halfSize ? 1 : 0) << i);
 
-	uint32_t epsilon = ~(gamma | (0xFFFFFFFF << bits));
+	uint32_t epsilon = ~(gamma | (0xFFFFFFFF << Bits));
 
 	return gamma * epsilon;
 }
 
-inline int RunLoop(const std::vector<uint32_t>& input, int bits, bool invertKeepOnes)
+inline int RunLoop(const std::vector<uint32_t>& Input, int bits, bool invertKeepOnes)
 {
-	std::vector<uint32_t> list(input);
+	std::vector<uint32_t> list(Input);
 
 	for (int i = bits - 1; i >= 0; i--)
 	{
@@ -55,8 +55,8 @@ inline int RunLoop(const std::vector<uint32_t>& input, int bits, bool invertKeep
 
 int Day3::RunB()
 {
-	int oxygen = RunLoop(input, bits, false);
-	int co2 = RunLoop(input, bits, true);
+	int oxygen = RunLoop(Input, Bits, false);
+	int co2 = RunLoop(Input, Bits, true);
 
 	return oxygen * co2;
 }

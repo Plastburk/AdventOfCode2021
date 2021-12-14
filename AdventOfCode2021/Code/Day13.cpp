@@ -5,20 +5,20 @@
 
 void Day13::ReadInput(std::ifstream& stream)
 {
-	input1.reserve(1000);
-	input2.reserve(30);
+	Input1.reserve(1000);
+	Input2.reserve(30);
 
 	ReadFuncFromStream<ReadVec2DT, ReadTypeAndIntT>(stream,
-		input1, ReadVec2D, { 'f',  ',', '\n' },
-		input2, ReadTypeAndInt, { 'x', 'y' }
+		Input1, ReadVec2D, { 'f',  ',', '\n' },
+		Input2, ReadTypeAndInt, { 'x', 'y' }
 	);
 }
 
 int Day13::RunA()
 {
-	std::vector<Vec2D> points(input1);
+	std::vector<Vec2D> points(Input1);
 
-	auto& [type, line] = input2[0];
+	auto& [type, line] = Input2[0];
 
 	for (auto& point : points)
 	{
@@ -34,9 +34,9 @@ int Day13::RunA()
 
 void Day13::RunB()
 {
-	std::vector<Vec2D> points(input1);
+	std::vector<Vec2D> points(Input1);
 
-	for (const auto& fold : input2)
+	for (const auto& fold : Input2)
 	{
 		auto& [type, line] = fold;
 

@@ -14,9 +14,9 @@ public:
 private:
 #pragma warning(push)
 #pragma warning(disable:26495)
-	char input[300];
+	char Input[300];
 #pragma warning(pop)
-	int inputSize = 0;
-	int width = 0;
-	int height = 0;
+	int InputSize = 0;
+	int Width = 0;
+	int Height = 0;
 };

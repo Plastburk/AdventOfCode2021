@@ -16,8 +16,8 @@ using ParseFuncEnd = std::function<void(std::vector<ListT>&, DataT&)>;
 template<class ListT, class DataT, class ParseParamT>
 struct ParseFuncContainer
 {
-	ParseFunc<ListT, DataT, ParseParamT> main;
-	ParseFuncEnd<ListT, DataT> end;
+	ParseFunc<ListT, DataT, ParseParamT> Main;
+	ParseFuncEnd<ListT, DataT> End;
 };
 
 template<class ListT1, class DataT1, class ParseParamT1, class ListT2, class DataT2, class ParseParamT2>
@@ -41,24 +41,24 @@ inline void ReadFuncFromStream(std::ifstream& stream, std::vector<ListT1>& list1
 
 		if (running1)
 		{
-			if (partial1.main(c, bytes, list1, data1, parseParam1))
+			if (partial1.Main(c, bytes, list1, data1, parseParam1))
 			{
-				partial1.end(list1, data1);
+				partial1.End(list1, data1);
 				running1 = false;
 			}
 		}
 
 		if (!running1)
 		{
-			if (partial2.main(c, bytes, list2, data2, parseParam2))
+			if (partial2.Main(c, bytes, list2, data2, parseParam2))
 				break;
 		}
 	}
 
 	if (running1)
-		partial1.end(list1, data1);
+		partial1.End(list1, data1);
 	else
-		partial2.end(list2, data2);
+		partial2.End(list2, data2);
 }
 
 template<class ListT1, class DataT1, class ParseParamT1>
@@ -77,11 +77,11 @@ inline void ReadFuncFromStream(std::ifstream& stream, std::vector<ListT1>& list1
 		if (bytes == 0)
 			break;
 
-		if (partial1.main(c, bytes, list1, data1, parseParam1))
+		if (partial1.Main(c, bytes, list1, data1, parseParam1))
 			break;
 	}
 
-	partial1.end(list1, data1);
+	partial1.End(list1, data1);
 }
 
 // ReadInts
@@ -89,16 +89,16 @@ inline void ReadFuncFromStream(std::ifstream& stream, std::vector<ListT1>& list1
 template<class IntT>
 struct ReadInts_Data
 {
-	bool hasNumber;
-	IntT number;
+	bool HasNumber;
+	IntT Number;
 };
 
 struct ReadInts_Params
 {
-	char until = 0;
-	char char1 = 0;
-	char char2 = 0;
-	char char3 = 0;
+	char Until = 0;
+	char Char1 = 0;
+	char Char2 = 0;
+	char Char3 = 0;
 };
 
 template<class IntT>
@@ -108,19 +108,19 @@ inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<IntT>& l
 	{
 		if (*c >= '0' && *c <= '9')
 		{
-			data.hasNumber = true;
-			data.number *= 10;
-			data.number += *c - '0';
+			data.HasNumber = true;
+			data.Number *= 10;
+			data.Number += *c - '0';
 		}
-		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
+		else if (*c == parseParam.Char1 || *c == parseParam.Char2 || *c == parseParam.Char3)
 		{
-			if (data.hasNumber)
-				list.push_back(data.number);
+			if (data.HasNumber)
+				list.push_back(data.Number);
 
-			data.number = 0;
-			data.hasNumber = false;
+			data.Number = 0;
+			data.HasNumber = false;
 		}
-		else if (*c == parseParam.until)
+		else if (*c == parseParam.Until)
 		{
 			return true;
 		}
@@ -135,8 +135,8 @@ inline bool ReadInts_Main(char*& c, std::streamsize& bytes, std::vector<IntT>& l
 template<class IntT>
 inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 {
-	if (data.hasNumber)
-		list.push_back(data.number);
+	if (data.HasNumber)
+		list.push_back(data.Number);
 }
 
 #define ReadInts { ReadInts_Main<int>, ReadInts_End<int> }
@@ -153,15 +153,15 @@ inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 template<class IntT>
 struct ReadCharsAsBits_Data
 {
-	bool hasNumber;
-	IntT number;
+	bool HasNumber;
+	IntT Number;
 };
 
 struct ReadCharsAsBits_Params
 {
-	char char1 = 0;
-	char char2 = 0;
-	char char3 = 0;
+	char Char1 = 0;
+	char Char2 = 0;
+	char Char3 = 0;
 };
 
 template<class IntT>
@@ -171,16 +171,16 @@ inline bool ReadCharsAsBits_Main(char*& c, std::streamsize& bytes, std::vector<I
 	{
 		if (*c >= 'a' && *c <= 'z')
 		{
-			data.hasNumber = true;
-			data.number |= 1 << (*c - 'a');
+			data.HasNumber = true;
+			data.Number |= 1 << (*c - 'a');
 		}
-		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
+		else if (*c == parseParam.Char1 || *c == parseParam.Char2 || *c == parseParam.Char3)
 		{
-			if (data.hasNumber)
-				list.push_back(data.number);
+			if (data.HasNumber)
+				list.push_back(data.Number);
 
-			data.number = 0;
-			data.hasNumber = false;
+			data.Number = 0;
+			data.HasNumber = false;
 		}
 
 		c++;
@@ -193,8 +193,8 @@ inline bool ReadCharsAsBits_Main(char*& c, std::streamsize& bytes, std::vector<I
 template<class IntT>
 inline void ReadCharsAsBits_End(std::vector<IntT>& list, ReadCharsAsBits_Data<IntT>& data)
 {
-	if (data.hasNumber)
-		list.push_back(data.number);
+	if (data.HasNumber)
+		list.push_back(data.Number);
 }
 
 #define ReadCharsAs8Bits { ReadCharsAsBits_Main<uint8_t>, ReadCharsAsBits_End<uint8_t> }
@@ -204,19 +204,19 @@ inline void ReadCharsAsBits_End(std::vector<IntT>& list, ReadCharsAsBits_Data<In
 
 struct ReadVec2D_Data
 {
-	bool hasNumber;
-	int number;
+	bool HasNumber;
+	int Number;
 
-	bool hasX;
-	Vec2D vector;
+	bool HasX;
+	Vec2D Vector;
 };
 
 struct ReadVec2D_Params
 {
-	char until = 0;
-	char char1 = 0;
-	char char2 = 0;
-	char char3 = 0;
+	char Until = 0;
+	char Char1 = 0;
+	char Char2 = 0;
+	char Char3 = 0;
 };
 
 inline bool ReadVec2D_Main(char*& c, std::streamsize& bytes, std::vector<Vec2D>& list, ReadVec2D_Data& data, const ReadVec2D_Params& parseParam)
@@ -225,31 +225,31 @@ inline bool ReadVec2D_Main(char*& c, std::streamsize& bytes, std::vector<Vec2D>&
 	{
 		if (*c >= '0' && *c <= '9')
 		{
-			data.hasNumber = true;
-			data.number *= 10;
-			data.number += *c - '0';
+			data.HasNumber = true;
+			data.Number *= 10;
+			data.Number += *c - '0';
 		}
-		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
+		else if (*c == parseParam.Char1 || *c == parseParam.Char2 || *c == parseParam.Char3)
 		{
-			if (data.hasNumber)
+			if (data.HasNumber)
 			{
-				if (!data.hasX)
+				if (!data.HasX)
 				{
-					data.vector.X = data.number;
-					data.hasX = true;
+					data.Vector.X = data.Number;
+					data.HasX = true;
 				}
 				else
 				{
-					data.vector.Y = data.number;
-					data.hasX = false;
-					list.push_back(data.vector);
+					data.Vector.Y = data.Number;
+					data.HasX = false;
+					list.push_back(data.Vector);
 				}
 			}
 
-			data.number = 0;
-			data.hasNumber = false;
+			data.Number = 0;
+			data.HasNumber = false;
 		}
-		else if (*c == parseParam.until)
+		else if (*c == parseParam.Until)
 		{
 			return true;
 		}
@@ -263,11 +263,11 @@ inline bool ReadVec2D_Main(char*& c, std::streamsize& bytes, std::vector<Vec2D>&
 
 inline void ReadVec2D_End(std::vector<Vec2D>& list, ReadVec2D_Data& data)
 {
-	if (data.hasNumber && data.hasX)
+	if (data.HasNumber && data.HasX)
 	{
-		data.vector.Y = data.number;
-		data.hasX = false;
-		list.push_back(data.vector);
+		data.Vector.Y = data.Number;
+		data.HasX = false;
+		list.push_back(data.Vector);
 	}
 }
 
@@ -279,16 +279,16 @@ inline void ReadVec2D_End(std::vector<Vec2D>& list, ReadVec2D_Data& data)
 template<class IntT>
 struct ReadTypeAndInt_Data
 {
-	bool hasType;
-	bool hasNumber;
-	char type;
-	IntT number;
+	bool HasType;
+	bool HasNumber;
+	char Type;
+	IntT Number;
 };
 
 struct ReadTypeAndInt_Params
 {
-	char firstValidType = 0;
-	char lastValidType = 0;
+	char FirstValidType = 0;
+	char LastValidType = 0;
 };
 
 template<class IntT>
@@ -298,26 +298,26 @@ inline bool ReadTypeAndInt_Main(char*& c, std::streamsize& bytes, std::vector<st
 	{
 		if (*c >= '0' && *c <= '9')
 		{
-			data.hasNumber = true;
-			data.number *= 10;
-			data.number += *c - '0';
+			data.HasNumber = true;
+			data.Number *= 10;
+			data.Number += *c - '0';
 		}
-		else if (*c >= parseParam.firstValidType && *c <= parseParam.lastValidType)
+		else if (*c >= parseParam.FirstValidType && *c <= parseParam.LastValidType)
 		{
-			if (!data.hasType)
+			if (!data.HasType)
 			{
-				data.type = *c;
-				data.hasType = true;
+				data.Type = *c;
+				data.HasType = true;
 			}
 		}
 		else if (*c == '\n')
 		{
-			if (data.hasType && data.hasNumber)
-				list.emplace_back(data.type, data.number);
+			if (data.HasType && data.HasNumber)
+				list.emplace_back(data.Type, data.Number);
 
-			data.number = 0;
-			data.hasType = false;
-			data.hasNumber = false;
+			data.Number = 0;
+			data.HasType = false;
+			data.HasNumber = false;
 		}
 
 		c++;
@@ -330,8 +330,8 @@ inline bool ReadTypeAndInt_Main(char*& c, std::streamsize& bytes, std::vector<st
 template<class IntT>
 inline void ReadTypeAndInt_End(std::vector<std::tuple<char, IntT>>& list, ReadTypeAndInt_Data<IntT>& data)
 {
-	if (data.hasType && data.hasNumber)
-		list.emplace_back(data.type, data.number);
+	if (data.HasType && data.HasNumber)
+		list.emplace_back(data.Type, data.Number);
 }
 
 #define ReadTypeAndInt { ReadTypeAndInt_Main<int>, ReadTypeAndInt_End<int> }

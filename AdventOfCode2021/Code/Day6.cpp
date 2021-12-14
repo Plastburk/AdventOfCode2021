@@ -6,18 +6,18 @@
 
 void Day6::ReadInput(std::ifstream& stream)
 {
-	input.reserve(600);
+	Input.reserve(600);
 	ReadFuncFromStream<ReadUInt8sT>(stream,
-		input, ReadUInt8s, { 0, ',' }
+		Input, ReadUInt8s, { 0, ',' }
 	);
 }
 
-inline uint64_t Run(const std::vector<uint8_t>& input, int days)
+inline uint64_t Run(const std::vector<uint8_t>& Input, int days)
 {
 	std::array<uint64_t, 9> fishPerDueDate{};
 
-	for (int i = 0; i < input.size(); i++)
-		fishPerDueDate[input[i]]++;
+	for (int i = 0; i < Input.size(); i++)
+		fishPerDueDate[Input[i]]++;
 
 	int currentDueIndex = 0;
 	for (int i = 0; i < days; i++)
@@ -35,10 +35,10 @@ inline uint64_t Run(const std::vector<uint8_t>& input, int days)
 
 uint64_t Day6::RunA()
 {
-	return Run(input, 80);
+	return Run(Input, 80);
 }
 
 uint64_t Day6::RunB()
 {
-	return Run(input, 256);
+	return Run(Input, 256);
 }

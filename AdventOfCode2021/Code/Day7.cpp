@@ -5,27 +5,27 @@
 
 void Day7::ReadInput(std::ifstream& stream)
 {
-	input.reserve(2000);
+	Input.reserve(2000);
 	ReadFuncFromStream<ReadUInt16sT>(stream,
-		input, ReadUInt16s, { 0, ',' }
+		Input, ReadUInt16s, { 0, ',' }
 	);
 }
 
-inline int CalculateCostForPosA(const std::vector<uint16_t>& input, size_t pos)
+inline int CalculateCostForPosA(const std::vector<uint16_t>& Input, size_t pos)
 {
 	int cost = 0;
-	for (size_t crab = 0; crab < input.size(); crab++)
-		cost += std::abs(input[crab] - (uint16_t)pos);
+	for (size_t crab = 0; crab < Input.size(); crab++)
+		cost += std::abs(Input[crab] - (uint16_t)pos);
 
 	return cost;
 }
 
-inline int CalculateCostForPosB(const std::vector<uint16_t>& input, size_t pos)
+inline int CalculateCostForPosB(const std::vector<uint16_t>& Input, size_t pos)
 {
 	int cost = 0;
-	for (size_t crab = 0; crab < input.size(); crab++)
+	for (size_t crab = 0; crab < Input.size(); crab++)
 	{
-		int distance = std::abs(input[crab] - (uint16_t)pos);
+		int distance = std::abs(Input[crab] - (uint16_t)pos);
 		cost += ((distance * distance) + distance) / 2;
 	}
 
@@ -34,15 +34,15 @@ inline int CalculateCostForPosB(const std::vector<uint16_t>& input, size_t pos)
 
 int Day7::RunA()
 {
-	uint16_t max = *std::max_element(input.begin(), input.end());
+	uint16_t max = *std::max_element(Input.begin(), Input.end());
 
 	size_t leftEdgePos = 0;
 	size_t rightEdgePos = max;
 	size_t middlePos = rightEdgePos / 2;
 
-	int leftCost = CalculateCostForPosA(input, leftEdgePos);
-	int rightCost = CalculateCostForPosA(input, rightEdgePos);
-	int middleCost = CalculateCostForPosA(input, middlePos);
+	int leftCost = CalculateCostForPosA(Input, leftEdgePos);
+	int rightCost = CalculateCostForPosA(Input, rightEdgePos);
+	int middleCost = CalculateCostForPosA(Input, middlePos);
 
 	while (true)
 	{
@@ -59,14 +59,14 @@ int Day7::RunA()
 
 		if (std::abs((long long)leftEdgePos - (long long)rightEdgePos) == 1)
 		{
-			leftCost = CalculateCostForPosA(input, leftEdgePos);
-			rightCost = CalculateCostForPosA(input, rightEdgePos);
+			leftCost = CalculateCostForPosA(Input, leftEdgePos);
+			rightCost = CalculateCostForPosA(Input, rightEdgePos);
 
 			return std::min(leftCost, rightCost);
 		}
 
 		middlePos = (leftEdgePos + rightEdgePos) / 2;
-		middleCost = CalculateCostForPosA(input, middlePos);
+		middleCost = CalculateCostForPosA(Input, middlePos);
 	}
 
 	return 0;
@@ -74,15 +74,15 @@ int Day7::RunA()
 
 int Day7::RunB()
 {
-	uint16_t max = *std::max_element(input.begin(), input.end());
+	uint16_t max = *std::max_element(Input.begin(), Input.end());
 
 	size_t leftEdgePos = 0;
 	size_t rightEdgePos = max;
 	size_t middlePos = rightEdgePos / 2;
 
-	int leftCost = CalculateCostForPosB(input, leftEdgePos);
-	int rightCost = CalculateCostForPosB(input, rightEdgePos);
-	int middleCost = CalculateCostForPosB(input, middlePos);
+	int leftCost = CalculateCostForPosB(Input, leftEdgePos);
+	int rightCost = CalculateCostForPosB(Input, rightEdgePos);
+	int middleCost = CalculateCostForPosB(Input, middlePos);
 
 	while (true)
 	{
@@ -99,14 +99,14 @@ int Day7::RunB()
 
 		if (std::abs((long long)leftEdgePos - (long long)rightEdgePos) == 1)
 		{
-			leftCost = CalculateCostForPosB(input, leftEdgePos);
-			rightCost = CalculateCostForPosB(input, rightEdgePos);
+			leftCost = CalculateCostForPosB(Input, leftEdgePos);
+			rightCost = CalculateCostForPosB(Input, rightEdgePos);
 
 			return std::min(leftCost, rightCost);
 		}
 
 		middlePos = (leftEdgePos + rightEdgePos) / 2;
-		middleCost = CalculateCostForPosB(input, middlePos);
+		middleCost = CalculateCostForPosB(Input, middlePos);
 	}
 
 	return 0;

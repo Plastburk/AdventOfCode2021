@@ -12,5 +12,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<int> input;
+	std::vector<int> Input;
 };

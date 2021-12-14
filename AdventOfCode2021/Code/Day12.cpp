@@ -1,7 +1,7 @@
 #include "Day12.h"
 #include "Utilities/Utilities.h"
 
-inline int CreateNode(std::vector<PathNode>& input, std::unordered_map<uint16_t, uint8_t>& nameToId, uint8_t& nextId, char* nameBuffer, int nameLength)
+inline int CreateNode(std::vector<PathNode>& Input, std::unordered_map<uint16_t, uint8_t>& nameToId, uint8_t& nextId, char* nameBuffer, int nameLength)
 {
 	if (nameLength == 5) // Start
 		return 0;
@@ -18,7 +18,7 @@ inline int CreateNode(std::vector<PathNode>& input, std::unordered_map<uint16_t,
 		if (result.second)
 		{
 #if _DEBUG
-			input.push_back({ std::string(nameBuffer, nameLength), id, type, 0 });
+			Input.push_back({ std::string(nameBuffer, nameLength), id, type, 0 });
 #else
 			input.push_back({ id, type, 0 });
 #endif
@@ -30,7 +30,7 @@ inline int CreateNode(std::vector<PathNode>& input, std::unordered_map<uint16_t,
 
 void Day12::ReadInput(std::ifstream& stream)
 {
-	input.reserve(100);
+	Input.reserve(100);
 
 	char buffer[1024];
 	stream.read(buffer, sizeof(buffer));
@@ -45,8 +45,8 @@ void Day12::ReadInput(std::ifstream& stream)
 	uint8_t leftNodeId = 0;
 	uint8_t rightNodeId = 0;
 #if _DEBUG
-	input.push_back({ "start", 0, PathNodeType::Start, 0 });
-	input.push_back({ "end", 1, PathNodeType::End, 0 });
+	Input.push_back({ "start", 0, PathNodeType::Start, 0 });
+	Input.push_back({ "end", 1, PathNodeType::End, 0 });
 	std::string left;
 #else
 	input.push_back({ 0, PathNodeType::Start, 0 });
@@ -61,20 +61,20 @@ void Day12::ReadInput(std::ifstream& stream)
 		}
 		else if (*c == '-')
 		{
-			leftNodeId = CreateNode(input, nameToId, nextId, nameBuffer, nameLength);
+			leftNodeId = CreateNode(Input, nameToId, nextId, nameBuffer, nameLength);
 			nameLength = 0;
 			nameBuffer[0] = 0;
 			nameBuffer[1] = 0;
 		}
 		else if (*c == '\n')
 		{
-			rightNodeId = CreateNode(input, nameToId, nextId, nameBuffer, nameLength);
+			rightNodeId = CreateNode(Input, nameToId, nextId, nameBuffer, nameLength);
 			nameLength = 0;
 			nameBuffer[0] = 0;
 			nameBuffer[1] = 0;
 
-			input[leftNodeId].Neighbors.push_back(&input[rightNodeId]);
-			input[rightNodeId].Neighbors.push_back(&input[leftNodeId]);
+			Input[leftNodeId].Neighbors.push_back(&Input[rightNodeId]);
+			Input[rightNodeId].Neighbors.push_back(&Input[leftNodeId]);
 		}
 
 		c++;
@@ -83,9 +83,9 @@ void Day12::ReadInput(std::ifstream& stream)
 
 	if (nameLength > 0)
 	{
-		rightNodeId = CreateNode(input, nameToId, nextId, nameBuffer, nameLength);
-		input[leftNodeId].Neighbors.push_back(&input[rightNodeId]);
-		input[rightNodeId].Neighbors.push_back(&input[leftNodeId]);
+		rightNodeId = CreateNode(Input, nameToId, nextId, nameBuffer, nameLength);
+		Input[leftNodeId].Neighbors.push_back(&Input[rightNodeId]);
+		Input[rightNodeId].Neighbors.push_back(&Input[leftNodeId]);
 	}
 }
 
@@ -124,7 +124,7 @@ inline int RecursivelyTraverseA(PathNode* pathNode)
 int Day12::RunA()
 {
 	// No cache on A, as the overhead of the cache seems to cost more than we gain.
-	return RecursivelyTraverseA(&input[0]);
+	return RecursivelyTraverseA(&Input[0]);
 }
 
 inline int RecursivelyTraverseB(PathNode* pathNode, bool smallVisitedMultipleTimes, uint32_t visited, CacheMap& cache)
@@ -164,5 +164,5 @@ inline int RecursivelyTraverseB(PathNode* pathNode, bool smallVisitedMultipleTim
 int Day12::RunB()
 {
 	CacheMap cache;
-	return RecursivelyTraverseB(&input[0], false, 0, cache);
+	return RecursivelyTraverseB(&Input[0], false, 0, cache);
 }

@@ -12,6 +12,6 @@ public:
 	int RunB();
 
 private:
-	std::vector<uint32_t> input;
-	int bits = 0;
+	std::vector<uint32_t> Input;
+	int Bits = 0;
 };

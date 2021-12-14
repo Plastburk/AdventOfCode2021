@@ -12,5 +12,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<std::tuple<char, int>> input;
+	std::vector<std::tuple<char, int>> Input;
 };

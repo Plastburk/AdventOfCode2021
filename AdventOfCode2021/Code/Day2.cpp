@@ -3,15 +3,15 @@
 
 void Day2::ReadInput(std::ifstream& stream)
 {
-	input.reserve(2000);
-	ReadTypeAndIntFromStream(stream, input);
+	Input.reserve(2000);
+	ReadTypeAndIntFromStream(stream, Input);
 }
 
 int Day2::RunA()
 {
 	int horizontal = 0;
 	int depth = 0;
-	for (const auto& line : input)
+	for (const auto& line : Input)
 	{
 		auto &[type, value] = line;
 
@@ -31,7 +31,7 @@ int Day2::RunB()
 	int horizontal = 0;
 	int depth = 0;
 	int aim = 0;
-	for (const auto& line : input)
+	for (const auto& line : Input)
 	{
 		auto &[type, value] = line;
 

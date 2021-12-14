@@ -7,9 +7,9 @@
 
 void Day8::ReadInput(std::ifstream& stream)
 {
-	input.reserve(3000);
+	Input.reserve(3000);
 	ReadFuncFromStream<ReadCharsAs8BitsT>(stream,
-		input, ReadCharsAs8Bits, { ' ', '\n' }
+		Input, ReadCharsAs8Bits, { ' ', '\n' }
 	);
 }
 
@@ -32,14 +32,14 @@ inline bool BIsSubsetOfA(uint8_t a, uint8_t b)
 
 int Day8::RunA()
 {
-	size_t sequences = input.size() / 14;
+	size_t sequences = Input.size() / 14;
 
 	int count = 0;
 	for (size_t i = 0; i < sequences; i++)
 	{
 		for (size_t j = 10; j < 14; j++)
 		{
-			char amount = AmountOfChars(input[i * 14 + j]);
+			char amount = AmountOfChars(Input[i * 14 + j]);
 
 			if (amount == 2 || amount == 3 || amount == 4 || amount == 7)
 				count++;
@@ -53,7 +53,7 @@ int Day8::RunB()
 {
 	std::atomic<int> total = 0;
 
-	size_t sequences = input.size() / 14;
+	size_t sequences = Input.size() / 14;
 	concurrency::parallel_for(size_t(0), sequences, [&](size_t i)
 		{
 			std::unordered_map<int, uint8_t> known;
@@ -61,7 +61,7 @@ int Day8::RunB()
 			// Find 1, 4, 7, 8
 			for (size_t j = 0; j < 10; j++)
 			{
-				const auto& value = input[i * 14 + j];
+				const auto& value = Input[i * 14 + j];
 				int amount = AmountOfChars(value);
 
 				if (amount == 2)
@@ -80,7 +80,7 @@ int Day8::RunB()
 			// Find 0, 6, 9
 			for (size_t j = 0; j < 10; j++)
 			{
-				const auto& value = input[i * 14 + j];
+				const auto& value = Input[i * 14 + j];
 				int amount = AmountOfChars(value);
 
 				if (amount != 6)
@@ -97,7 +97,7 @@ int Day8::RunB()
 			// Find 2, 3, 5
 			for (size_t j = 0; j < 10; j++)
 			{
-				const auto& value = input[i * 14 + j];
+				const auto& value = Input[i * 14 + j];
 				int amount = AmountOfChars(value);
 
 				if (amount != 5)
@@ -115,7 +115,7 @@ int Day8::RunB()
 			int number = 0;
 			for (size_t j = 10; j < 14; j++)
 			{
-				const auto& value = input[i * 14 + j];
+				const auto& value = Input[i * 14 + j];
 
 				for (int n = 0; n < 10; n++)
 					if (value == known[n])

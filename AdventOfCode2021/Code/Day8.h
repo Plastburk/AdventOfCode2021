@@ -12,5 +12,5 @@ public:
 	int RunB();
 
 private:
-	std::vector<uint8_t> input;
+	std::vector<uint8_t> Input;
 };
