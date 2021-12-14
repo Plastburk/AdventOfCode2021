@@ -10,19 +10,31 @@
 #include "Day10.h"
 #include "Day11.h"
 #include "Day12.h"
+#include "Day13.h"
 #include "Utilities/Utilities.h"
 
 #include <iostream>
 #include <fstream>
 #include <ppl.h>
 
-#define CASE_DAY(day) case day: \
+#define CASE_DAY(day, formatA, formatB) case day: \
 	{ \
 		Day##day obj; \
 		std::ifstream stream("inputs/" #day ".txt"); \
 		obj.ReadInput(stream); \
-		std::cout << #day "a: " << obj.RunA() << std::endl; \
-		std::cout << #day "b: " << obj.RunB() << std::endl; \
+		auto a = obj.RunA(); \
+		auto b = obj.RunB(); \
+		printf(#day "a: " ##formatA "\n" #day "b: " ##formatB "\n", a, b); \
+		break; \
+	}
+
+#define CASE_DAY_2(day, formatA) case day: \
+	{ \
+		Day##day obj; \
+		std::ifstream stream("inputs/" #day ".txt"); \
+		obj.ReadInput(stream); \
+		printf(#day "a: " ##formatA "\n" #day "b: ", obj.RunA()); \
+		obj.RunB(); \
 		break; \
 	}
 
@@ -39,18 +51,19 @@ int main(int argc, char* argv[])
 		{
 			switch (ToInt(argv[j]))
 			{
-				CASE_DAY(1);
-				CASE_DAY(2);
-				CASE_DAY(3);
-				CASE_DAY(4);
-				CASE_DAY(5);
-				CASE_DAY(6);
-				CASE_DAY(7);
-				CASE_DAY(8);
-				CASE_DAY(9);
-				CASE_DAY(10);
-				CASE_DAY(11);
-				CASE_DAY(12);
+				CASE_DAY(1, "%d", "%d");
+				CASE_DAY(2, "%d", "%d");
+				CASE_DAY(3, "%d", "%d");
+				CASE_DAY(4, "%d", "%d");
+				CASE_DAY(5, "%d", "%d");
+				CASE_DAY(6, "%lld", "%lld");
+				CASE_DAY(7, "%d", "%d");
+				CASE_DAY(8, "%d", "%d");
+				CASE_DAY(9, "%d", "%d");
+				CASE_DAY(10, "%d", "%lld");
+				CASE_DAY(11, "%d", "%d");
+				CASE_DAY(12, "%d", "%d");
+				CASE_DAY_2(13, "%d");
 			}
 		}
 		std::cout << "Done" << std::endl;

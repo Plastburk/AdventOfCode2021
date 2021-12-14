@@ -24,16 +24,6 @@ void Day9::ReadInput(std::ifstream& stream)
 #pragma warning(pop)
 }
 
-struct Vec2D
-{
-	int X;
-	int Y;
-
-	Vec2D(int x, int y) :
-		X(x), Y(y)
-	{	}
-};
-
 inline char GetValue(const char* input, int x, int y, int width)
 {
 	int i = y * (width + 1) + x;

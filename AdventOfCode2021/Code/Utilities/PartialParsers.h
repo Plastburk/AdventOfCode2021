@@ -199,3 +199,140 @@ inline void ReadCharsAsBits_End(std::vector<IntT>& list, ReadCharsAsBits_Data<In
 
 #define ReadCharsAs8Bits { ReadCharsAsBits_Main<uint8_t>, ReadCharsAsBits_End<uint8_t> }
 #define ReadCharsAs8BitsT uint8_t, ReadCharsAsBits_Data<uint8_t>, ReadCharsAsBits_Params
+
+// ReadVec2D
+
+struct ReadVec2D_Data
+{
+	bool hasNumber;
+	int number;
+
+	bool hasX;
+	Vec2D vector;
+};
+
+struct ReadVec2D_Params
+{
+	char until = 0;
+	char char1 = 0;
+	char char2 = 0;
+	char char3 = 0;
+};
+
+inline bool ReadVec2D_Main(char*& c, std::streamsize& bytes, std::vector<Vec2D>& list, ReadVec2D_Data& data, const ReadVec2D_Params& parseParam)
+{
+	while (bytes > 0)
+	{
+		if (*c >= '0' && *c <= '9')
+		{
+			data.hasNumber = true;
+			data.number *= 10;
+			data.number += *c - '0';
+		}
+		else if (*c == parseParam.char1 || *c == parseParam.char2 || *c == parseParam.char3)
+		{
+			if (data.hasNumber)
+			{
+				if (!data.hasX)
+				{
+					data.vector.X = data.number;
+					data.hasX = true;
+				}
+				else
+				{
+					data.vector.Y = data.number;
+					data.hasX = false;
+					list.push_back(data.vector);
+				}
+			}
+
+			data.number = 0;
+			data.hasNumber = false;
+		}
+		else if (*c == parseParam.until)
+		{
+			return true;
+		}
+
+		c++;
+		bytes--;
+	}
+
+	return false;
+}
+
+inline void ReadVec2D_End(std::vector<Vec2D>& list, ReadVec2D_Data& data)
+{
+	if (data.hasNumber && data.hasX)
+	{
+		data.vector.Y = data.number;
+		data.hasX = false;
+		list.push_back(data.vector);
+	}
+}
+
+#define ReadVec2D { ReadVec2D_Main, ReadVec2D_End }
+#define ReadVec2DT Vec2D, ReadVec2D_Data, ReadVec2D_Params
+
+// ReadTypeAndInt
+
+template<class IntT>
+struct ReadTypeAndInt_Data
+{
+	bool hasType;
+	bool hasNumber;
+	char type;
+	IntT number;
+};
+
+struct ReadTypeAndInt_Params
+{
+	char firstValidType = 0;
+	char lastValidType = 0;
+};
+
+template<class IntT>
+inline bool ReadTypeAndInt_Main(char*& c, std::streamsize& bytes, std::vector<std::tuple<char, IntT>>& list, ReadTypeAndInt_Data<IntT>& data, const ReadTypeAndInt_Params& parseParam)
+{
+	while (bytes > 0)
+	{
+		if (*c >= '0' && *c <= '9')
+		{
+			data.hasNumber = true;
+			data.number *= 10;
+			data.number += *c - '0';
+		}
+		else if (*c >= parseParam.firstValidType && *c <= parseParam.lastValidType)
+		{
+			if (!data.hasType)
+			{
+				data.type = *c;
+				data.hasType = true;
+			}
+		}
+		else if (*c == '\n')
+		{
+			if (data.hasType && data.hasNumber)
+				list.emplace_back(data.type, data.number);
+
+			data.number = 0;
+			data.hasType = false;
+			data.hasNumber = false;
+		}
+
+		c++;
+		bytes--;
+	}
+
+	return false;
+}
+
+template<class IntT>
+inline void ReadTypeAndInt_End(std::vector<std::tuple<char, IntT>>& list, ReadTypeAndInt_Data<IntT>& data)
+{
+	if (data.hasType && data.hasNumber)
+		list.emplace_back(data.type, data.number);
+}
+
+#define ReadTypeAndInt { ReadTypeAndInt_Main<int>, ReadTypeAndInt_End<int> }
+#define ReadTypeAndIntT std::tuple<char, int>, ReadTypeAndInt_Data<int>, ReadTypeAndInt_Params
