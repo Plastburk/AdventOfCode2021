@@ -2,6 +2,7 @@
 #include "Utilities/Utilities.h"
 
 #include <unordered_set>
+#include <algorithm>
 
 void Day4::ReadInput(std::ifstream& stream)
 {

@@ -42,14 +42,14 @@ int main(int argc, char* argv[])
 {
 	Concurrency::CurrentScheduler::Create(Concurrency::SchedulerPolicy(1, Concurrency::MaxConcurrency, 8));
 
-	int iterations = ToInt(argv[1]);
+	int iterations = atoi(argv[1]);
 
 	for (int i = 0; i < iterations; i++)
 	{
 		std::cout << "Solving" << std::endl;
 		for (int j = 2; j < argc; j++)
 		{
-			switch (ToInt(argv[j]))
+			switch (atoi(argv[j]))
 			{
 				CASE_DAY(1, "%d", "%d");
 				CASE_DAY(2, "%d", "%d");

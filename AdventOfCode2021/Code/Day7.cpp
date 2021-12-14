@@ -1,6 +1,8 @@
 #include "Day7.h"
 #include "Utilities/Utilities.h"
 
+#include <algorithm>
+
 void Day7::ReadInput(std::ifstream& stream)
 {
 	input.reserve(2000);

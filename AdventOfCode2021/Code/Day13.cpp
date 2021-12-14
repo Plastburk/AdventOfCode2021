@@ -1,6 +1,8 @@
 #include "Day13.h"
 #include "Utilities/Utilities.h"
 
+#include <algorithm>
+
 void Day13::ReadInput(std::ifstream& stream)
 {
 	input1.reserve(1000);
