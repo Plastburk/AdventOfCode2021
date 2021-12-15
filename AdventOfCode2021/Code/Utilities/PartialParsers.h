@@ -148,6 +148,42 @@ inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 #define ReadUInt8s { ReadInts_Main<uint8_t>, ReadInts_End<uint8_t> }
 #define ReadUInt8sT uint8_t, ReadInts_Data<uint8_t>, ReadInts_Params
 
+// ReadChars
+
+struct ReadChars_Data
+{};
+
+struct ReadChars_Params
+{
+	char Until = 0;
+};
+
+inline bool ReadChars_Main(char*& c, std::streamsize& bytes, std::vector<char>& list, ReadChars_Data& data, const ReadChars_Params& parseParam)
+{
+	while (bytes > 0)
+	{
+		if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z'))
+		{
+			list.push_back(*c);
+		}
+		else if (*c == parseParam.Until)
+		{
+			return true;
+		}
+
+		c++;
+		bytes--;
+	}
+
+	return false;
+}
+
+inline void ReadChars_End(std::vector<char>& list, ReadChars_Data& data)
+{}
+
+#define ReadChars { ReadChars_Main, ReadChars_End }
+#define ReadCharsT char, ReadChars_Data, ReadChars_Params
+
 // ReadCharsAsBits
 
 template<class IntT>
