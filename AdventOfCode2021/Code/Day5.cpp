@@ -95,7 +95,7 @@ int Day5::RunB()
 			size_t x = x1;
 			size_t y = y1;
 			size_t num = std::abs((long long)x2 - (long long)x1);
-			for (int i = 0; i <= num; i++, x += xDirection, y += yDirection)
+			for (int j = 0; j <= num; j++, x += xDirection, y += yDirection)
 				if (++map[y * dimensions + x] == 2)
 					total++;
 		}

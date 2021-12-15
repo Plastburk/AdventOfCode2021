@@ -12,9 +12,6 @@ public:
 	uint64_t RunB();
 
 private:
-#pragma warning(push)
-#pragma warning(disable:26495)
-	char Input[30000];
-#pragma warning(pop)
+	char Input[30000]{};
 	int InputSize = 0;
 };

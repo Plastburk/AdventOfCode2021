@@ -57,15 +57,15 @@ int main(int argc, char* argv[])
 				CASE_DAY(3, "%d", "%d");
 				CASE_DAY(4, "%d", "%d");
 				CASE_DAY(5, "%d", "%d");
-				CASE_DAY(6, "%lld", "%lld");
+				CASE_DAY(6, "%llu", "%llu");
 				CASE_DAY(7, "%d", "%d");
 				CASE_DAY(8, "%d", "%d");
 				CASE_DAY(9, "%d", "%d");
-				CASE_DAY(10, "%d", "%lld");
+				CASE_DAY(10, "%d", "%llu");
 				CASE_DAY(11, "%d", "%d");
 				CASE_DAY(12, "%d", "%d");
 				CASE_DAY_2(13, "%d");
-				CASE_DAY(14, "%lld", "%lld");
+				CASE_DAY(14, "%llu", "%llu");
 			}
 		}
 		std::cout << "Done" << std::endl;

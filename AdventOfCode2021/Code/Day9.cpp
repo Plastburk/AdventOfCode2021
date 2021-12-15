@@ -60,12 +60,12 @@ inline int TraverseBasin(char* Input, size_t i, size_t width, size_t height)
 		Vec2D pos = stack.back();
 		stack.pop_back();
 
-		size_t i = pos.Y * (width + 1) + pos.X;
-		if (Input[i] == '9')
+		size_t j = pos.Y * (width + 1) + pos.X;
+		if (Input[j] == '9')
 			continue;
 
 		basinSize++;
-		Input[i] = '9';
+		Input[j] = '9';
 
 		if (pos.Y > 0)
 			stack.push_back(Vec2D(pos.X, pos.Y - 1));
