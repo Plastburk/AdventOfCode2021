@@ -12,6 +12,7 @@
 #include "Day12.h"
 #include "Day13.h"
 #include "Day14.h"
+#include "Day15.h"
 #include "Utilities/Utilities.h"
 
 #include <iostream>
@@ -66,6 +67,7 @@ int main(int argc, char* argv[])
 				CASE_DAY(12, "%d", "%d");
 				CASE_DAY_2(13, "%d");
 				CASE_DAY(14, "%llu", "%llu");
+				CASE_DAY(15, "%d", "%d");
 			}
 		}
 		std::cout << "Done" << std::endl;

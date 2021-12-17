@@ -2,6 +2,7 @@
 <RuleSet Name="ProjectRules" ToolsVersion="17.0">
   <Include Path="nativerecommendedrules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+    <Rule Id="C26451" Action="None" />
     <Rule Id="C6262" Action="None" />
   </Rules>
 </RuleSet>
