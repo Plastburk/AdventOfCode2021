@@ -1,7 +1,8 @@
 #include "Day12.h"
 #include "Utilities/Utilities.h"
+#include "Utilities/RobinHood.h"
 
-inline int CreateNode(std::vector<PathNode>& Input, std::unordered_map<uint16_t, uint8_t>& nameToId, uint8_t& nextId, char* nameBuffer, int nameLength)
+inline int CreateNode(std::vector<PathNode>& Input, robin_hood::unordered_map<uint16_t, uint8_t>& nameToId, uint8_t& nextId, char* nameBuffer, int nameLength)
 {
 	if (nameLength == 5) // Start
 		return 0;
@@ -40,7 +41,7 @@ void Day12::ReadInput(std::ifstream& stream)
 	char nameBuffer[15]{};
 	int nameLength = 0;
 
-	std::unordered_map<uint16_t, uint8_t> nameToId;
+	robin_hood::unordered_map<uint16_t, uint8_t> nameToId;
 	uint8_t nextId = 2;
 	uint8_t leftNodeId = 0;
 	uint8_t rightNodeId = 0;
@@ -89,7 +90,7 @@ void Day12::ReadInput(std::ifstream& stream)
 	}
 }
 
-typedef std::unordered_map<uint64_t, int> CacheMap;
+typedef robin_hood::unordered_map<uint64_t, int> CacheMap;
 
 inline uint64_t CreateCacheKey(uint8_t currentNode, uint32_t visited, bool smallVisitedMultipleTimes)
 {

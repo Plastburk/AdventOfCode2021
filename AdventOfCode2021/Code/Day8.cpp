@@ -1,7 +1,7 @@
 #include "Day8.h"
 #include "Utilities/Utilities.h"
+#include "Utilities/RobinHood.h"
 
-#include <unordered_map>
 #include <atomic>
 #include <ppl.h>
 
@@ -56,7 +56,7 @@ int Day8::RunB()
 	size_t sequences = Input.size() / 14;
 	concurrency::parallel_for(size_t(0), sequences, [&](size_t i)
 		{
-			std::unordered_map<int, uint8_t> known;
+			robin_hood::unordered_map<int, uint8_t> known;
 
 			// Find 1, 4, 7, 8
 			for (size_t j = 0; j < 10; j++)

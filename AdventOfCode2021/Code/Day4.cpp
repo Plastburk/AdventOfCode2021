@@ -1,7 +1,7 @@
 #include "Day4.h"
 #include "Utilities/Utilities.h"
+#include "Utilities/RobinHood.h"
 
-#include <unordered_set>
 #include <algorithm>
 
 void Day4::ReadInput(std::ifstream& stream)
@@ -15,7 +15,7 @@ void Day4::ReadInput(std::ifstream& stream)
 	);
 
 	// Remap boards so each number is the turn that number will be called instead
-	std::unordered_map<int, int> valueToTurn;
+	robin_hood::unordered_map<int, int> valueToTurn;
 	for (int i = 0; i < Input1.size(); i++)
 		valueToTurn[Input1[i]] = i;
 

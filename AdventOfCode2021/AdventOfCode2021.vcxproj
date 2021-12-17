@@ -64,6 +64,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>External;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +86,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>External;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +132,7 @@
     <ClInclude Include="Code\Day9.h" />
     <ClInclude Include="Code\Utilities\FullParsers.h" />
     <ClInclude Include="Code\Utilities\PartialParsers.h" />
+    <ClInclude Include="Code\Utilities\RobinHood.h" />
     <ClInclude Include="Code\Utilities\Types.h" />
     <ClInclude Include="Code\Utilities\Utilities.h" />
   </ItemGroup>
