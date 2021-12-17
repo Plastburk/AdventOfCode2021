@@ -111,6 +111,8 @@
     <ClInclude Include="Code\Utilities\Types.h">
       <Filter>Source Files\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Utilities\RobinHood.h" />
+    <ClInclude Include="Code\Utilities\RobinHood.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
