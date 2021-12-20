@@ -15,9 +15,16 @@ struct Vec2D
 		X(x), Y(y)
 	{	}
 
-	bool operator==(const Vec2D& other) const
+	inline bool operator==(const Vec2D& other) const
 	{
 		return X == other.X && Y == other.Y;
+	}
+
+	inline Vec2D& operator+=(const Vec2D& other)
+	{
+		X += other.X;
+		Y += other.Y;
+		return *this;
 	}
 };
 

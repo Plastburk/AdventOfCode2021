@@ -148,6 +148,62 @@ inline void ReadInts_End(std::vector<IntT>& list, ReadInts_Data<IntT>& data)
 #define ReadUInt8s { ReadInts_Main<uint8_t>, ReadInts_End<uint8_t> }
 #define ReadUInt8sT uint8_t, ReadInts_Data<uint8_t>, ReadInts_Params
 
+// ReadSignedInts
+
+struct ReadSignedInts_Data
+{
+	bool IsNegative;
+	bool HasNumber;
+	int Number;
+};
+
+struct ReadSignedInts_Params
+{
+	char Char1 = 0;
+	char Char2 = 0;
+	char Char3 = 0;
+};
+
+inline bool ReadSignedInts_Main(char*& c, std::streamsize& bytes, std::vector<int>& list, ReadSignedInts_Data& data, const ReadSignedInts_Params& parseParam)
+{
+	while (bytes > 0)
+	{
+		if (*c >= '0' && *c <= '9')
+		{
+			data.HasNumber = true;
+			data.Number *= 10;
+			data.Number += *c - '0';
+		}
+		if (*c == '-')
+		{
+			data.IsNegative = true;
+		}
+		else if (*c == parseParam.Char1 || *c == parseParam.Char2 || *c == parseParam.Char3)
+		{
+			if (data.HasNumber)
+				list.push_back(data.Number * (data.IsNegative ? -1 : 1));
+
+			data.Number = 0;
+			data.HasNumber = false;
+			data.IsNegative = false;
+		}
+
+		c++;
+		bytes--;
+	}
+
+	return false;
+}
+
+inline void ReadSignedInts_End(std::vector<int>& list, ReadSignedInts_Data& data)
+{
+	if (data.HasNumber)
+		list.push_back(data.Number * (data.IsNegative ? -1 : 1));
+}
+
+#define ReadSignedInts { ReadSignedInts_Main, ReadSignedInts_End }
+#define ReadSignedIntsT int, ReadSignedInts_Data, ReadSignedInts_Params
+
 // ReadChars
 
 struct ReadChars_Data
