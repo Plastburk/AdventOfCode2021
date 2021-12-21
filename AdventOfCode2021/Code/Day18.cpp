@@ -1,5 +1,8 @@
 #include "Day18.h"
 #include "Utilities/Utilities.h"
+#include "Utilities/Mutex.h"
+
+#include <ppl.h>
 
 void Day18::ReadInput(std::ifstream& stream)
 {
@@ -41,71 +44,78 @@ void Day18::ReadInput(std::ifstream& stream)
 		Input.pop_back();
 }
 
-inline int FindPairToExplode(const std::vector<SnailfishNumber>& number)
+inline bool ExplodePairs(std::vector<SnailfishNumber>& number)
 {
-	const size_t size = number.size();
-	for (int i = 0; i < size - 1; i++)
+	bool anyExploded = false;
+	int firstValid = 0;
+	while (true)
 	{
-		uint8_t depth1 = number[i].Depth;
-		uint8_t depth2 = number[i + 1].Depth;
-		if (depth1 > 4 && depth1 == depth2)
-			return i;
+		int j = -1;
+		const size_t size = number.size();
+		for (int i = firstValid; i < size - 1; i++)
+		{
+			uint8_t depth1 = number[i].Depth;
+			uint8_t depth2 = number[i + 1].Depth;
+			if (depth1 > 4 && depth1 == depth2)
+			{
+				j = i;
+				break;
+			}
+		}
+		if (j < 0)
+			break;
+
+		if (j > 0)
+			number[j - 1].Number += number[j].Number;
+
+		if (j < size - 2)
+			number[j + 2].Number += number[j + 1].Number;
+
+		number[j].Number = 0;
+		number[j].Depth--;
+
+		number.erase(number.begin() + j + 1);
+		firstValid = j;
+		anyExploded = true;
 	}
-	return -1;
+	return anyExploded;
 }
 
-inline void ExplodePair(std::vector<SnailfishNumber>& number, int i)
+inline bool TrySplit(std::vector<SnailfishNumber>& number)
 {
-	if (i > 0)
-		number[i - 1].Number += number[i].Number;
-
-	if (i < number.size() - 2)
-		number[i + 2].Number += number[i + 1].Number;
-
-	number[i].Number = 0;
-	number[i].Depth--;
-
-	number.erase(number.begin() + i + 1);
-}
-
-inline int FindNumberToSplit(const std::vector<SnailfishNumber>& number)
-{
+	int j = -1;
 	const size_t size = number.size();
 	for (int i = 0; i < size; i++)
 	{
 		if (number[i].Number >= 10)
-			return i;
+		{
+			j = i;
+			break;
+		}
 	}
-	return -1;
-}
 
-inline void SplitNumber(std::vector<SnailfishNumber>& number, int i)
-{
-	uint8_t orig = number[i].Number;
+	if (j < 0)
+		return false;
+
+	uint8_t orig = number[j].Number;
 	uint8_t a = orig / 2;
 	uint8_t b = (a * 2) == orig ? a : a + 1;
 
-	number[i].Number = a;
-	number[i].Depth++;
-	number.emplace(number.begin() + i + 1, b, number[i].Depth);
+	number[j].Number = a;
+	number[j].Depth++;
+	number.emplace(number.begin() + j + 1, b, number[j].Depth);
+
+	return true;
 }
 
 inline void ReduceNumber(std::vector<SnailfishNumber>& number)
 {
 	while (true)
 	{
-		int i = FindPairToExplode(number);
-		while (i >= 0)
-		{
-			ExplodePair(number, i);
-			i = FindPairToExplode(number);
-		}
+		bool anyExploded = ExplodePairs(number);
+		bool splitNumber = TrySplit(number);
 
-		int j = FindNumberToSplit(number);
-		if (j >= 0)
-			SplitNumber(number, j);
-
-		if (i < 0 && j < 0)
+		if (!anyExploded && !splitNumber)
 			break;
 	}
 }
@@ -149,28 +159,36 @@ int Day18::RunA()
 
 int Day18::RunB()
 {
+	Mutex mutex;
+
 	int max = 0;
-	for (int i = 0; i < Input.size() - 1; i++)
-		for (int j = i + 1; j < Input.size(); j++)
+	concurrency::parallel_for(0, (int)Input.size() - 1, [&](int i)
 		{
-			std::vector<SnailfishNumber> a = Input[i];
-			std::vector<SnailfishNumber> b = Input[j];
-			AddNumbers(a, Input[j]);
-			AddNumbers(b, Input[i]);
+			for (int j = i + 1; j < Input.size(); j++)
+			{
+				std::vector<SnailfishNumber> a = Input[i];
+				std::vector<SnailfishNumber> b = Input[j];
+				AddNumbers(a, Input[j]);
+				AddNumbers(b, Input[i]);
 
-			ReduceNumber(a);
-			ReduceNumber(b);
+				ReduceNumber(a);
+				ReduceNumber(b);
 
-			int aa = 0;
-			int bb = 0;
-			int aMag = CalculateMagnitude(a, aa, 1);
-			int bMag = CalculateMagnitude(b, bb, 1);
+				int aa = 0;
+				int bb = 0;
+				int aMag = CalculateMagnitude(a, aa, 1);
+				int bMag = CalculateMagnitude(b, bb, 1);
 
-			if (aMag > max)
-				max = aMag;
-			if (bMag > max)
-				max = bMag;
-		}
+				{
+					Lock lock(mutex);
+
+					if (aMag > max)
+						max = aMag;
+					if (bMag > max)
+						max = bMag;
+				}
+			}
+		});
 
 	return max;
 }
