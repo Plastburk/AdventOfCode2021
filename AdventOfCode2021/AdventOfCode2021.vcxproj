@@ -117,6 +117,7 @@
     <ClCompile Include="Code\Day8.cpp" />
     <ClCompile Include="Code\Day9.cpp" />
     <ClCompile Include="Code\Main.cpp" />
+    <ClCompile Include="Code\Day18.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Day1.h" />
@@ -141,6 +142,7 @@
     <ClInclude Include="Code\Utilities\RobinHood.h" />
     <ClInclude Include="Code\Utilities\Types.h" />
     <ClInclude Include="Code\Utilities\Utilities.h" />
+    <ClInclude Include="Code\Day18.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
