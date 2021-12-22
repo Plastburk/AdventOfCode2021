@@ -67,6 +67,9 @@
     <ClCompile Include="Code\Day18.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Day19.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Day1.h">
@@ -138,6 +141,11 @@
     <ClInclude Include="Code\Day18.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Utilities\Mutex.h" />
+    <ClInclude Include="Code\Day19.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Utilities\Mutex.h">
+      <Filter>Source Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
