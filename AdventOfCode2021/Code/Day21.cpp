@@ -52,75 +52,75 @@ int Day21::RunA()
 	}
 }
 
+static const int DieOutcomes[] = { 1, 3, 6, 7, 6, 3, 1 };
+
 struct PlayState
 {
-	uint8_t Player1Pos;
-	uint8_t Player2Pos;
-	uint8_t Player1Score;
-	uint8_t Player2Score;
-
-	inline bool operator==(const PlayState& other) const
-	{
-		return Player1Pos == other.Player1Pos && Player2Pos == other.Player2Pos && Player1Score == other.Player1Score && Player2Score == other.Player2Score;
-	}
+	uint8_t CurrentPlayerPos;
+	uint8_t OtherPlayerPos;
+	uint8_t CurrentPlayerScore;
+	uint8_t OtherPlayerScore;
 };
 
-template<>
-struct std::hash<PlayState>
+typedef robin_hood::unordered_map<uint32_t, std::tuple<uint64_t, uint64_t>> CacheMap;
+
+inline uint32_t CreateCacheKey(const PlayState& value)
 {
-	size_t operator()(const PlayState& value) const
+	return ((uint32_t)value.OtherPlayerScore) << 24 | ((uint32_t)value.CurrentPlayerScore) << 16 | ((uint32_t)value.OtherPlayerPos) << 8 | (uint32_t)value.CurrentPlayerPos;
+}
+
+inline void RecursivelyRunTurn(const PlayState& state, uint64_t& thisPlayerWins, uint64_t& otherPlayerWins, CacheMap& cachedOutcomes)
+{
+	uint32_t cacheKey = CreateCacheKey(state);
+	auto cache = cachedOutcomes.find(cacheKey);
+	if (cache != cachedOutcomes.end())
 	{
-		return ((size_t)value.Player2Score) << 48 | ((size_t)value.Player1Score) << 32 | ((size_t)value.Player2Pos) << 16 | (size_t)value.Player1Pos;
+		auto& [thisWins, otherWins] = cache->second;
+		thisPlayerWins = thisWins;
+		otherPlayerWins = otherWins;
+		return;
 	}
-};
+
+	thisPlayerWins = 0;
+	otherPlayerWins = 0;
+	for (auto die = 3; die < 10; die++)
+	{
+		PlayState newState{};
+		newState.CurrentPlayerPos = (state.CurrentPlayerPos + die) % 10;
+		newState.OtherPlayerPos = state.OtherPlayerPos;
+
+		newState.CurrentPlayerScore = state.CurrentPlayerScore + (newState.CurrentPlayerPos + 1);
+		newState.OtherPlayerScore = state.OtherPlayerScore;
+
+		if (newState.CurrentPlayerScore >= 21)
+			thisPlayerWins += DieOutcomes[die - 3];
+		else
+		{
+			// Flip which player is the current player between turns
+			std::swap(newState.CurrentPlayerPos, newState.OtherPlayerPos);
+			std::swap(newState.CurrentPlayerScore, newState.OtherPlayerScore);
+
+			uint64_t newThisPlayerWins;
+			uint64_t newOtherPlayerWins;
+			RecursivelyRunTurn(newState, newOtherPlayerWins, newThisPlayerWins, cachedOutcomes);
+
+			thisPlayerWins += newThisPlayerWins * DieOutcomes[die - 3];
+			otherPlayerWins += newOtherPlayerWins * DieOutcomes[die - 3];
+		}
+	}
+
+	cachedOutcomes[cacheKey] = { thisPlayerWins, otherPlayerWins };
+}
 
 uint64_t Day21::RunB()
 {
-	robin_hood::unordered_map<PlayState, uint64_t> universesPerState[2];
-	robin_hood::unordered_map<PlayState, uint64_t>* currentUniversesPerState = &universesPerState[0];
-	robin_hood::unordered_map<PlayState, uint64_t>* nextUniversesPerState = &universesPerState[1];
+	CacheMap cachedOutcomes;
+	cachedOutcomes.reserve(20000);
 
 	PlayState state{ (uint8_t)(Player1Start - 1), (uint8_t)(Player2Start - 1), 0, 0 };
-	(*universesPerState)[state] = 1;
-
-	int dieOutcomes[] = { 1, 3, 6, 7, 6, 3, 1 };
-
 	uint64_t player1Wins = 0;
 	uint64_t player2Wins = 0;
-	do
-	{
-		for (const auto& pair : *currentUniversesPerState)
-		{
-			const auto& state = pair.first;
-			uint64_t universes = pair.second;
-
-			// TODO Could I optimize this with an array/map containing all outcomes for both dice?
-			for (auto die1 = 3; die1 < 10; die1++)
-				for (auto die2 = 3; die2 < 10; die2++)
-				{
-					PlayState newState{};
-					newState.Player1Pos = (state.Player1Pos + die1) % 10;
-					newState.Player2Pos = (state.Player2Pos + die2) % 10;
-
-					newState.Player1Score = state.Player1Score + (newState.Player1Pos + 1);
-					newState.Player2Score = state.Player2Score + (newState.Player2Pos + 1);
-
-					uint64_t newUniverses = dieOutcomes[die1 - 3] * dieOutcomes[die2 - 3] * universes;
-					if (newState.Player1Score >= 21)
-					{
-						player1Wins += dieOutcomes[die1 - 3] * universes;
-						break;
-					}
-					else if (newState.Player2Score >= 21)
-						player2Wins += newUniverses;
-					else
-						(* nextUniversesPerState)[newState] += newUniverses;
-				}
-		}
-
-		std::swap(currentUniversesPerState, nextUniversesPerState);
-		nextUniversesPerState->clear();
-	} while ((*currentUniversesPerState).size() > 0);
+	RecursivelyRunTurn(state, player1Wins, player2Wins, cachedOutcomes);
 
 	return std::max(player1Wins, player2Wins);
 }
