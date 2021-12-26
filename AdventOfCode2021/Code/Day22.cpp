@@ -196,9 +196,7 @@ uint64_t Run(std::vector<Instruction>& input)
 
 			// 3) Count their volume and sum it
 			for (const Cube& newCube : newCubes)
-			{
 				volume += (uint64_t)(newCube.Max.X - newCube.Min.X) * (uint64_t)(newCube.Max.Y - newCube.Min.Y) * (uint64_t)(newCube.Max.Z - newCube.Min.Z);
-			}
 		}
 
 		seenCubes.push_back(cube);
