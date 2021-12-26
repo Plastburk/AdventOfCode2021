@@ -21,6 +21,7 @@
 #include "Day21.h"
 #include "Day22.h"
 #include "Day24.h"
+#include "Day25.h"
 #include "Utilities/Utilities.h"
 
 #include <iostream>
@@ -47,6 +48,17 @@
 		obj.RunB(); \
 		break; \
 	}
+
+#define CASE_DAY_3(day, formatA) case day: \
+	{ \
+		Day##day obj; \
+		std::ifstream stream("inputs/" #day ".txt"); \
+		obj.ReadInput(stream); \
+		auto a = obj.RunA(); \
+		printf(#day "a: " ##formatA "\n", a); \
+		break; \
+	}
+
 
 int main(int argc, char* argv[])
 {
@@ -84,6 +96,7 @@ int main(int argc, char* argv[])
 				CASE_DAY(21, "%d", "%llu");
 				CASE_DAY(22, "%llu", "%llu");
 				CASE_DAY(24, "%llu", "%llu");
+				CASE_DAY_3(25, "%d");
 			}
 		}
 		std::cout << "Done" << std::endl;
