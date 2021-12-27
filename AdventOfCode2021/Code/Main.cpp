@@ -20,6 +20,7 @@
 #include "Day20.h"
 #include "Day21.h"
 #include "Day22.h"
+#include "Day23.h"
 #include "Day24.h"
 #include "Day25.h"
 #include "Utilities/Utilities.h"
@@ -95,6 +96,7 @@ int main(int argc, char* argv[])
 				CASE_DAY(20, "%d", "%d");
 				CASE_DAY(21, "%d", "%llu");
 				CASE_DAY(22, "%llu", "%llu");
+				CASE_DAY(23, "%d", "%d");
 				CASE_DAY(24, "%llu", "%llu");
 				CASE_DAY_3(25, "%d");
 			}
